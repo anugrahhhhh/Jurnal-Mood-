@@ -15,6 +15,10 @@ export const FORMAT_VERSION = 1;
 export const KDF = 'PBKDF2-SHA256';
 export const ITERATIONS = 600_000;
 export const MIN_PASSPHRASE_LENGTH = 12;
+// Kunci pemulihan acak 120 bit: iterasi tinggi tidak diperlukan untuk menahan
+// tebakan (entropinya sudah sangat besar), cukup sebagai lapisan tambahan.
+export const RECOVERY_ITERATIONS = 100_000;
+const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
 
 const VERIFIER_PLAINTEXT = 'mood-journal-verifier-v1';
 const AES = { name: 'AES-GCM', length: 256 };
@@ -28,6 +32,13 @@ export class WrongPassphraseError extends Error {
   constructor() {
     super('Passphrase salah.');
     this.name = 'WrongPassphraseError';
+  }
+}
+
+export class WrongRecoveryCodeError extends Error {
+  constructor(message = 'Kunci pemulihan salah.') {
+    super(message);
+    this.name = 'WrongRecoveryCodeError';
   }
 }
 
@@ -87,7 +98,12 @@ async function unwrapDEK(passphrase, userId, material, extractable) {
   } catch {
     throw new WrongPassphraseError(); // tag GCM tidak cocok: passphrase salah
   }
+  await checkVerifier(dek, userId, material);
+  return dek;
+}
 
+// Memastikan DEK yang terbuka memang DEK jurnal ini (bukan data kunci rusak).
+async function checkVerifier(dek, userId, material) {
   let ok = false;
   try {
     const pt = await subtle().decrypt(
@@ -98,15 +114,92 @@ async function unwrapDEK(passphrase, userId, material, extractable) {
     ok = false;
   }
   if (!ok) throw new Error('Kunci jurnal tidak cocok dengan nilai ujinya (data kunci rusak).');
+}
+
+// ---- Kunci pemulihan ----
+
+/** Kunci pemulihan acak 120 bit, mis. "K7QX-M2PA-9TFD-4WRB-H8NC-3ZEV". */
+export function generateRecoveryCode() {
+  const bytes = randomBytes(15);
+  let bits = 0;
+  let value = 0;
+  let out = '';
+  for (const b of bytes) {
+    value = ((value << 8) | b) & 0xffff;
+    bits += 8;
+    while (bits >= 5) {
+      out += CROCKFORD[(value >>> (bits - 5)) & 31];
+      bits -= 5;
+    }
+  }
+  return out.match(/.{4}/g).join('-');
+}
+
+/** Merapikan kunci yang diketik: huruf kecil, spasi/strip, dan O/I/L yang mirip angka. */
+export function normalizeRecoveryCode(code) {
+  const clean = String(code).toUpperCase().replace(/[\s-]/g, '')
+    .replace(/O/g, '0').replace(/[IL]/g, '1');
+  if (!/^[0-9A-HJKMNP-TV-Z]{24}$/.test(clean)) {
+    throw new WrongRecoveryCodeError('Kunci pemulihan harus 24 karakter (huruf dan angka).');
+  }
+  return clean;
+}
+
+async function wrapWithRecovery(extractableDEK, code, userId, iterations = RECOVERY_ITERATIONS) {
+  const salt = randomBytes(16);
+  const wrapIv = randomBytes(12);
+  const kek = await deriveKEK(normalizeRecoveryCode(code), salt, iterations);
+  const wrapped = await subtle().wrapKey('raw', extractableDEK, kek,
+    { name: 'AES-GCM', iv: wrapIv, additionalData: aad('recovery-dek', `user:${userId}`) });
+  return { iterations, salt, wrappedKey: new Uint8Array(wrapped), wrapIv };
+}
+
+async function unwrapWithRecovery(code, userId, material, extractable) {
+  const r = material.recovery;
+  if (!r) throw new WrongRecoveryCodeError('Akun ini belum punya kunci pemulihan.');
+  const kek = await deriveKEK(normalizeRecoveryCode(code), r.salt, r.iterations);
+  let dek;
+  try {
+    dek = await subtle().unwrapKey('raw', r.wrappedKey, kek,
+      { name: 'AES-GCM', iv: r.wrapIv, additionalData: aad('recovery-dek', `user:${userId}`) },
+      AES, extractable, ['encrypt', 'decrypt']);
+  } catch {
+    throw new WrongRecoveryCodeError();
+  }
+  await checkVerifier(dek, userId, material);
   return dek;
 }
 
+/** Membuat kunci pemulihan baru untuk jurnal yang sudah ada (butuh passphrase). */
+export async function addRecoveryKey(passphrase, userId, material, { iterations = RECOVERY_ITERATIONS } = {}) {
+  const extractable = await unwrapDEK(passphrase, userId, material, true);
+  const code = generateRecoveryCode();
+  const wrap = await wrapWithRecovery(extractable, code, userId, iterations);
+  return { code, wrap };
+}
+
 /**
- * Membuat kunci jurnal baru.
- * @returns {{material: object, dek: CryptoKey}} material untuk dikirim ke
- *   server (lihat materialToJSON) dan DEK non-extractable untuk sesi ini.
+ * Lupa passphrase: buka DEK dengan kunci pemulihan, lalu bungkus dengan
+ * passphrase baru. Semua entri lama tetap terbaca.
+ * @returns {{wrap: object, dek: CryptoKey}}
  */
-export async function createJournalKey(passphrase, userId, { iterations = ITERATIONS } = {}) {
+export async function recoverWithCode(code, newPassphrase, userId, material,
+  { iterations = ITERATIONS } = {}) {
+  checkPassphrase(newPassphrase);
+  const extractable = await unwrapWithRecovery(code, userId, material, true);
+  const wrap = await wrapDEK(extractable, newPassphrase, userId, iterations);
+  const dek = await toNonExtractable(extractable);
+  return { wrap, dek };
+}
+
+/**
+ * Membuat kunci jurnal baru, sekaligus kunci pemulihan.
+ * @returns {{material: object, dek: CryptoKey, recoveryCode: string}} material
+ *   untuk dikirim ke server (lihat materialToJSON), DEK non-extractable untuk
+ *   sesi ini, dan kunci pemulihan yang hanya ditampilkan ke pengguna.
+ */
+export async function createJournalKey(passphrase, userId,
+  { iterations = ITERATIONS, recoveryIterations = RECOVERY_ITERATIONS } = {}) {
   checkPassphrase(passphrase);
   const extractable = await subtle().generateKey(AES, true, ['encrypt', 'decrypt']);
   const wrap = await wrapDEK(extractable, passphrase, userId, iterations);
@@ -114,8 +207,10 @@ export async function createJournalKey(passphrase, userId, { iterations = ITERAT
   const verifier = new Uint8Array(await subtle().encrypt(
     { name: 'AES-GCM', iv: verifierIv, additionalData: aad('verifier', `user:${userId}`) },
     extractable, encoder.encode(VERIFIER_PLAINTEXT)));
+  const recoveryCode = generateRecoveryCode();
+  const recovery = await wrapWithRecovery(extractable, recoveryCode, userId, recoveryIterations);
   const dek = await toNonExtractable(extractable);
-  return { material: { version: FORMAT_VERSION, ...wrap, verifier, verifierIv }, dek };
+  return { material: { version: FORMAT_VERSION, ...wrap, verifier, verifierIv, recovery }, dek, recoveryCode };
 }
 
 /** Membuka kunci jurnal. Melempar WrongPassphraseError jika passphrase salah. */
@@ -193,11 +288,17 @@ export function wrapToJSON(w) {
   };
 }
 
+export function recoveryToJSON(r) {
+  return { iterations: r.iterations, salt: toBase64(r.salt), wrappedKey: toBase64(r.wrappedKey), wrapIv: toBase64(r.wrapIv) };
+}
+
 export function materialToJSON(m) {
-  return {
+  const j = {
     version: m.version, ...wrapToJSON(m),
     verifier: toBase64(m.verifier), verifierIv: toBase64(m.verifierIv),
   };
+  if (m.recovery) j.recovery = recoveryToJSON(m.recovery);
+  return j;
 }
 
 export function materialFromJSON(j) {
@@ -205,5 +306,9 @@ export function materialFromJSON(j) {
     version: j.version, kdf: j.kdf, iterations: j.iterations,
     salt: fromBase64(j.salt), wrappedKey: fromBase64(j.wrappedKey), wrapIv: fromBase64(j.wrapIv),
     verifier: fromBase64(j.verifier), verifierIv: fromBase64(j.verifierIv),
+    recovery: j.recovery ? {
+      iterations: j.recovery.iterations, salt: fromBase64(j.recovery.salt),
+      wrappedKey: fromBase64(j.recovery.wrappedKey), wrapIv: fromBase64(j.recovery.wrapIv),
+    } : null,
   };
 }

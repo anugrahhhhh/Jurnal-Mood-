@@ -129,6 +129,13 @@ func (s *Store) Range(ctx context.Context, userID int64, from, to time.Time) ([]
 	})
 }
 
+// FirstDate mengembalikan tanggal entri paling awal, atau nil jika belum ada.
+func (s *Store) FirstDate(ctx context.Context, userID int64) (*time.Time, error) {
+	var d *time.Time
+	err := s.db.QueryRow(ctx, `SELECT min(entry_date) FROM entries WHERE user_id = $1`, userID).Scan(&d)
+	return d, err
+}
+
 // LastSleep mengembalikan jam tidur dari entri terakhir sebelum tanggal d,
 // sebagai nilai awal tombol tidur (SPEC 5). ok=false jika belum ada entri.
 func (s *Store) LastSleep(ctx context.Context, userID int64, before time.Time) (minutes int, ok bool, err error) {

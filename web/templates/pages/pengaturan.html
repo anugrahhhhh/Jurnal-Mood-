@@ -24,6 +24,7 @@
     <ul class="menu">
       {{if .Data.HasJournalKey}}
       <li><a href="/jurnal/ganti"><span class="ico" aria-hidden="true">🔑</span><span>Ganti passphrase jurnal</span></a></li>
+      <li><a href="/jurnal/pemulihan"><span class="ico" aria-hidden="true">🛟</span><span>Kunci pemulihan</span></a></li>
       <li class="if-unlocked"><button type="button" data-action="lock"><span class="ico" aria-hidden="true">🔓</span><span>Kunci jurnal sekarang</span></button></li>
       <li class="if-locked"><a href="/jurnal/buka"><span class="ico" aria-hidden="true">🔒</span><span>Buka jurnal</span></a></li>
       {{else}}
@@ -53,6 +54,20 @@
     </div>
   </section>
 {{end}}
+
+  {{if .Data.HasJournalKey}}
+  <section class="card glass span-all" data-page="export" aria-labelledby="set-data">
+    <h2 id="set-data">Data kamu</h2>
+    <p>Unduh semua catatanmu: mood, tidur, aktivitas, dan catatan. File dibuat di perangkat ini dan
+      <strong>tidak terenkripsi</strong>, jadi simpan di tempat yang aman.</p>
+    <div class="actions start if-unlocked">
+      <button type="button" class="btn secondary" data-action="export-json">⬇️ Unduh JSON</button>
+      <button type="button" class="btn secondary" data-action="export-csv">⬇️ Unduh CSV (Excel)</button>
+    </div>
+    <p class="muted if-locked">Buka jurnal dulu agar catatan bisa dibaca. <a href="/jurnal/buka?lanjut=%2Fpengaturan">Buka jurnal</a></p>
+    <p class="hint" data-role="export-status" role="status" hidden></p>
+  </section>
+  {{end}}
 
   <section class="card glass danger-zone span-all" aria-labelledby="set-delete">
     <h2 id="set-delete">Hapus akun</h2>

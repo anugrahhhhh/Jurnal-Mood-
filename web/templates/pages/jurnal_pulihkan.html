@@ -1,0 +1,32 @@
+{{define "content"}}
+<div class="page page-narrow">
+<section class="card glass" data-page="recover">
+  <h1>Pulihkan jurnal</h1>
+  <p>Lupa passphrase? Masukkan <strong>kunci pemulihan</strong> yang kamu simpan saat membuat jurnal, lalu buat
+    passphrase baru. Semua catatan lama tetap bisa dibaca.</p>
+  <p class="notice" data-role="no-recovery" hidden>Akun ini belum punya kunci pemulihan, jadi catatan dan aktivitas
+    tidak bisa dibuka tanpa passphrase. Skor mood dan jam tidur tetap tersimpan.</p>
+  <noscript><p class="error">Fitur ini membutuhkan JavaScript.</p></noscript>
+
+  <form class="form" data-form="journal-recover" hx-boost="false" autocomplete="off">
+    <p class="error" data-role="error" role="alert" hidden></p>
+    <label>Kunci pemulihan
+      <input type="text" data-field="recovery-code" autocomplete="off" autocapitalize="characters" spellcheck="false"
+             placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX" required data-autofocus>
+    </label>
+    <label>Passphrase baru
+      <input type="password" data-field="new-passphrase" autocomplete="off" minlength="12" required data-strength>
+    </label>
+    <label>Ulangi passphrase baru
+      <input type="password" data-field="new-passphrase-confirm" autocomplete="off" required>
+    </label>
+    <label>Password login
+      <input type="password" data-field="login-password" autocomplete="current-password" required>
+      <span class="hint">Untuk memastikan ini benar-benar kamu.</span>
+    </label>
+    <button type="submit" class="btn">Pulihkan &amp; buka jurnal</button>
+  </form>
+  <p class="muted center"><a href="/jurnal/buka">Kembali ke buka jurnal</a></p>
+</section>
+</div>
+{{end}}

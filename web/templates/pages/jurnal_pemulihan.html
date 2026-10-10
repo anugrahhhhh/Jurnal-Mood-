@@ -1,0 +1,23 @@
+{{define "content"}}
+<div class="page page-narrow">
+<section class="card glass" data-page="recovery-settings" data-role="recovery-form-card">
+  <h1>Kunci pemulihan</h1>
+  <p class="notice" data-role="recovery-status">Memeriksa…</p>
+  <p>Kunci pemulihan dipakai bila kamu lupa passphrase jurnal. Membuat kunci baru membuat kunci lama
+    <strong>tidak berlaku lagi</strong>.</p>
+  <noscript><p class="error">Fitur ini membutuhkan JavaScript.</p></noscript>
+  <form class="form" data-form="recovery-new" hx-boost="false" autocomplete="off">
+    <p class="error" data-role="error" role="alert" hidden></p>
+    <label>Passphrase jurnal
+      <input type="password" data-field="passphrase" autocomplete="off" required data-autofocus>
+    </label>
+    <label>Password login
+      <input type="password" data-field="login-password" autocomplete="current-password" required>
+    </label>
+    <button type="submit" class="btn">Buat kunci pemulihan baru</button>
+  </form>
+  <p class="muted center"><a href="/pengaturan">Kembali ke pengaturan</a></p>
+</section>
+{{template "recovery-panel" "Selesai"}}
+</div>
+{{end}}

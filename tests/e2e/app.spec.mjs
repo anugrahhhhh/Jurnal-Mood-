@@ -4,6 +4,7 @@
 //   - tidak ada scroll horizontal (tata letak muat di layar),
 //   - navigasi yang benar tampil: tab bar di layar < 900px, sidebar di >= 900px.
 // Screenshot setiap langkah disimpan di test-results/shots/ untuk ditinjau.
+import fs from 'node:fs';
 import path from 'node:path';
 
 import { expect, test } from '@playwright/test';
@@ -85,6 +86,16 @@ test('perjalanan lengkap: daftar → passphrase → catat → beranda → riwaya
   await page.locator('[data-field="understand"]').check();
   await page.getByRole('button', { name: /Buat .* buka jurnal/ }).click();
 
+  // Kunci pemulihan ditampilkan sekali; tombol lanjut baru aktif setelah dicentang.
+  const panel = page.locator('[data-role="recovery-panel"]');
+  await expect(panel).toBeVisible({ timeout: 30_000 });
+  const recoveryCode = (await panel.locator('[data-role="recovery-code"]').textContent()).trim();
+  expect(recoveryCode).toMatch(/^[0-9A-Z]{4}(-[0-9A-Z]{4}){5}$/);
+  await checkLayout(page, '03b-kunci-pemulihan', testInfo, { signedIn: true });
+  await expect(panel.locator('[data-action="recovery-done"]')).toBeDisabled();
+  await panel.locator('[data-field="recovery-saved"]').check();
+  await panel.locator('[data-action="recovery-done"]').click();
+
   // Langkah 3: catatan pertama
   await expect(page).toHaveURL(/\/hari-ini\?mulai=1$/, { timeout: 30_000 });
   await expect(page.locator('[data-role="onboarding"]')).toBeVisible();
@@ -140,9 +151,34 @@ test('perjalanan lengkap: daftar → passphrase → catat → beranda → riwaya
   await expect(page).toHaveURL(/\/riwayat$/, { timeout: 30_000 });
   await expect(page.locator(`[data-role="calendar"] .cell[data-date="${today}"]`)).toHaveAttribute('data-mood', '4');
 
+  // Lupa passphrase: pulihkan dengan kunci pemulihan (diketik huruf kecil, tanpa strip).
+  const NEW_PASSPHRASE = 'gunung pasir laut bintang';
+  await page.locator('[data-action="lock"]:visible').first().click();
+  await expect(page).toHaveURL(/\/jurnal\/buka\?/);
+  await page.getByRole('link', { name: 'Pakai kunci pemulihan' }).click();
+  await expect(page).toHaveURL(/\/jurnal\/pulihkan$/);
+  await page.locator('[data-field="recovery-code"]').fill(recoveryCode.toLowerCase().replace(/-/g, ' '));
+  await page.locator('[data-field="new-passphrase"]').fill(NEW_PASSPHRASE);
+  await page.locator('[data-field="new-passphrase-confirm"]').fill(NEW_PASSPHRASE);
+  await page.locator('[data-field="login-password"]').fill(PASSWORD);
+  await checkLayout(page, '06b-pulihkan', testInfo, { signedIn: true });
+  await page.locator('main form button[type="submit"]').click();
+  await expect(page).toHaveURL(/\/hari-ini$/, { timeout: 30_000 });
+  await expect(page.locator('html')).toHaveAttribute('data-journal', 'unlocked');
+  await expect(page.locator('[data-role="saved-note"]')).toBeVisible(); // entri lama terbaca dengan kunci yang sama
+
   // Pengaturan (di HP satu-satunya tempat tombol Keluar)
   await nav(page, '/pengaturan');
   await expect(page.locator('form[action="/akun/hapus"]'), 'form hapus akun tertutup secara bawaan').toBeHidden();
+  // Ekspor: file dibuat di perangkat ini dan berisi catatan yang sudah dibuka.
+  const [dl] = await Promise.all([page.waitForEvent('download'), page.locator('[data-action="export-json"]').click()]);
+  expect(dl.suggestedFilename()).toMatch(/^jurnal-mood-\d{4}-\d{2}-\d{2}\.json$/);
+  const exported = JSON.parse(fs.readFileSync(await dl.path(), 'utf8'));
+  expect(exported.entries.map((r) => r.note)).toContain(NOTE);
+  const [dlCsv] = await Promise.all([page.waitForEvent('download'), page.locator('[data-action="export-csv"]').click()]);
+  expect(fs.readFileSync(await dlCsv.path(), 'utf8')).toContain('Catatan rahasia uji e2e');
+  await expect(page.locator('[data-role="export-status"]')).toContainText('catatan diunduh');
+
   await page.locator('main a[href="/akun/password"]').click();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ganti password login');
   await checkLayout(page, '07b-ganti-password', testInfo, { signedIn: true });

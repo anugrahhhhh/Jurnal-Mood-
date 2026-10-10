@@ -117,7 +117,7 @@ test('format JSON cocok dengan validasi server', async () => {
   const { material } = await createJournalKey(PASS, USER, FAST);
   const json = materialToJSON(material);
   assert.deepEqual(Object.keys(json).sort(),
-    ['iterations', 'kdf', 'salt', 'verifier', 'verifierIv', 'version', 'wrapIv', 'wrappedKey']);
+    ['iterations', 'kdf', 'recovery', 'salt', 'verifier', 'verifierIv', 'version', 'wrapIv', 'wrappedKey']);
   assert.equal(json.version, 1);
   assert.equal(json.kdf, 'PBKDF2-SHA256');
 

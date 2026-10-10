@@ -95,6 +95,22 @@ func (s *Server) handleListEntries(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, out)
 }
 
+// GET /api/entri/rentang: tanggal entri pertama, untuk ekspor semua data.
+func (s *Server) handleEntriesRange(w http.ResponseWriter, r *http.Request) {
+	first, err := s.entries.FirstDate(r.Context(), currentUser(r).ID)
+	if s.entryError(w, err) {
+		return
+	}
+	out := struct {
+		First *string `json:"first"`
+	}{}
+	if first != nil {
+		d := first.Format("2006-01-02")
+		out.First = &d
+	}
+	writeJSON(w, http.StatusOK, out)
+}
+
 // PUT /api/entri/{tanggal}
 func (s *Server) handleSaveEntry(w http.ResponseWriter, r *http.Request) {
 	date, err := entries.ParseDate(chi.URLParam(r, "tanggal"))

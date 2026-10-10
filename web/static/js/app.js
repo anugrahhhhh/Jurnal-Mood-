@@ -5,9 +5,12 @@
 // JavaScript pun passphrase tidak mungkin ikut terkirim ke server.
 
 import {
-  changePassphrase, createJournalKey, materialFromJSON, materialToJSON,
-  MIN_PASSPHRASE_LENGTH, PassphraseTooShortError, unlockJournalKey, WrongPassphraseError, wrapToJSON,
+  addRecoveryKey, changePassphrase, createJournalKey, materialFromJSON, materialToJSON,
+  MIN_PASSPHRASE_LENGTH, PassphraseTooShortError, recoverWithCode, recoveryToJSON, unlockJournalKey,
+  WrongPassphraseError, WrongRecoveryCodeError, wrapToJSON,
 } from './crypto.js';
+import { exportAll } from './export.js';
+import { showRecoveryPanel } from './recovery-ui.js';
 import { initDashboard } from './dashboard.js';
 import { initEntryPage } from './entry-form.js';
 import { initGentleCard } from './gentle.js';
@@ -112,7 +115,8 @@ function enhanceForms() {
 class FormError extends Error {}
 
 function messageFor(err) {
-  if (err instanceof FormError || err instanceof WrongPassphraseError || err instanceof PassphraseTooShortError) {
+  if (err instanceof FormError || err instanceof WrongPassphraseError || err instanceof PassphraseTooShortError
+    || err instanceof WrongRecoveryCodeError) {
     return err.message;
   }
   if (err instanceof ApiError) {
@@ -133,11 +137,44 @@ const handlers = {
     if (!field(form, 'understand').checked) throw new FormError('Centang pernyataan di atas untuk melanjutkan.');
 
     setBusy(form, true, 'Membuat kunci… (beberapa detik)');
-    const { material, dek } = await createJournalKey(pass, c.userId);
+    const { material, dek, recoveryCode } = await createJournalKey(pass, c.userId);
     await api('POST', '/api/jurnal/kunci', materialToJSON(material));
     setKey(c.userId, dek);
     clearSecrets(form);
-    await navigate('/hari-ini?mulai=1'); // langkah 3 onboarding: catatan pertama
+    const card = document.querySelector('[data-role="create-card"]');
+    if (card) card.hidden = true;
+    showRecoveryPanel(document.querySelector('[data-role="recovery-panel"]'), recoveryCode,
+      () => navigate('/hari-ini?mulai=1')); // langkah 3 onboarding: catatan pertama
+  },
+
+  async 'journal-recover'(form, c) {
+    const code = field(form, 'recovery-code').value;
+    const newPass = field(form, 'new-passphrase').value;
+    if (newPass !== field(form, 'new-passphrase-confirm').value) throw new FormError('Konfirmasi passphrase baru tidak sama.');
+    const loginPassword = field(form, 'login-password').value;
+
+    setBusy(form, true, 'Memulihkan… (beberapa detik)');
+    const material = materialFromJSON(await api('GET', '/api/jurnal/kunci'));
+    const { wrap, dek } = await recoverWithCode(code, newPass, c.userId, material);
+    await api('PUT', '/api/jurnal/kunci', { loginPassword, ...wrapToJSON(wrap) });
+    setKey(c.userId, dek);
+    clearSecrets(form);
+    field(form, 'recovery-code').value = '';
+    toast('Jurnal dipulihkan. Pakai passphrase baru mulai sekarang.');
+    await navigate('/hari-ini');
+  },
+
+  async 'recovery-new'(form, c) {
+    const pass = field(form, 'passphrase').value;
+    const loginPassword = field(form, 'login-password').value;
+    setBusy(form, true, 'Membuat kunci pemulihan…');
+    const material = materialFromJSON(await api('GET', '/api/jurnal/kunci'));
+    const { code, wrap } = await addRecoveryKey(pass, c.userId, material);
+    await api('PUT', '/api/jurnal/pemulihan', { loginPassword, ...recoveryToJSON(wrap) });
+    clearSecrets(form);
+    const card = document.querySelector('[data-role="recovery-form-card"]');
+    if (card) card.hidden = true;
+    showRecoveryPanel(document.querySelector('[data-role="recovery-panel"]'), code, () => navigate('/pengaturan'));
   },
 
   async 'journal-unlock'(form, c) {
@@ -189,7 +226,23 @@ document.addEventListener('submit', async (e) => {
   }
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener('click', async (e) => {
+  const exp = e.target.closest('[data-action="export-json"], [data-action="export-csv"]');
+  if (exp) {
+    const c = ctx();
+    const dek = c && getKey(c.userId);
+    if (!dek) { toast('Buka jurnal dulu.'); return; }
+    exp.disabled = true;
+    try {
+      await exportAll(c, dek, exp.dataset.action === 'export-csv' ? 'csv' : 'json', document.querySelector('[data-role="export-status"]'));
+    } catch (err) {
+      console.error(err);
+      toast('Gagal menyiapkan file. Coba lagi.');
+    } finally {
+      exp.disabled = false;
+    }
+    return;
+  }
   if (e.target.closest('[data-action="lock"]')) {
     e.preventDefault();
     lock({ reason: 'manual' });
@@ -241,6 +294,22 @@ function init() {
   if (historyPage && unlocked) {
     initHistoryPage(historyPage, c, getKey(c.userId)).catch(fail('Gagal memuat riwayat. Muat ulang halaman lalu coba lagi.'));
   }
+  const recoveryStatus = document.querySelector('[data-page="recovery-settings"] [data-role="recovery-status"]');
+  const recoverPage = document.querySelector('[data-page="recover"]');
+  if (c && (recoveryStatus || recoverPage)) {
+    api('GET', '/api/jurnal/kunci').then((k) => {
+      if (recoveryStatus) {
+        recoveryStatus.textContent = k.recovery
+          ? '✓ Kunci pemulihan aktif. Buat yang baru bila kunci lama hilang atau mungkin diketahui orang lain.'
+          : 'Akun ini belum punya kunci pemulihan. Buat sekarang agar catatanmu tidak hilang bila lupa passphrase.';
+      }
+      if (recoverPage && !k.recovery) {
+        recoverPage.querySelector('[data-role="no-recovery"]').hidden = false;
+        recoverPage.querySelector('form').hidden = true;
+      }
+    }).catch((err) => console.error(err));
+  }
+
   const remindersPage = document.querySelector('[data-page="reminders"]');
   if (remindersPage && c) {
     initReminders(remindersPage).catch((err) => {

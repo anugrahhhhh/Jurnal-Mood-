@@ -15,6 +15,20 @@ import (
 // keyJSON adalah bentuk material kunci di API. Field []byte otomatis
 // di-encode base64 oleh encoding/json. Tidak ada field untuk passphrase
 // atau DEK asli: field yang tidak dikenal ditolak (decodeJSON).
+type recoveryJSON struct {
+	Iterations int    `json:"iterations"`
+	Salt       []byte `json:"salt"`
+	WrappedKey []byte `json:"wrappedKey"`
+	WrapIV     []byte `json:"wrapIv"`
+}
+
+func (r *recoveryJSON) toWrap() *journal.RecoveryWrap {
+	if r == nil {
+		return nil
+	}
+	return &journal.RecoveryWrap{Iterations: r.Iterations, Salt: r.Salt, WrappedDEK: r.WrappedKey, WrapIV: r.WrapIV}
+}
+
 type keyJSON struct {
 	Version    int    `json:"version"`
 	KDF        string `json:"kdf"`
@@ -24,6 +38,14 @@ type keyJSON struct {
 	WrapIV     []byte `json:"wrapIv"`
 	Verifier   []byte `json:"verifier"`
 	VerifierIV []byte `json:"verifierIv"`
+	// Recovery: bungkus kunci pemulihan (null untuk akun lama tanpa kunci pemulihan).
+	Recovery *recoveryJSON `json:"recovery"`
+}
+
+// setRecoveryJSON: membuat/mengganti kunci pemulihan, butuh password login.
+type setRecoveryJSON struct {
+	LoginPassword string `json:"loginPassword"`
+	recoveryJSON
 }
 
 type rewrapJSON struct {
@@ -83,6 +105,32 @@ func (s *Server) handleJournalChangePage(w http.ResponseWriter, r *http.Request)
 	s.render.Page(w, http.StatusOK, "jurnal_ganti", page(r, "Ganti passphrase jurnal", nil))
 }
 
+// /jurnal/pulihkan: lupa passphrase, pakai kunci pemulihan.
+func (s *Server) handleJournalRecoverPage(w http.ResponseWriter, r *http.Request) {
+	exists, ok := s.journalExists(w, r)
+	if !ok {
+		return
+	}
+	if !exists {
+		http.Redirect(w, r, "/jurnal/buat", http.StatusSeeOther)
+		return
+	}
+	s.render.Page(w, http.StatusOK, "jurnal_pulihkan", page(r, "Pulihkan jurnal", nil))
+}
+
+// /jurnal/pemulihan: lihat status & buat kunci pemulihan baru.
+func (s *Server) handleJournalRecoverySettingsPage(w http.ResponseWriter, r *http.Request) {
+	exists, ok := s.journalExists(w, r)
+	if !ok {
+		return
+	}
+	if !exists {
+		http.Redirect(w, r, "/jurnal/buat", http.StatusSeeOther)
+		return
+	}
+	s.render.Page(w, http.StatusOK, "jurnal_pemulihan", page(r, "Kunci pemulihan", nil))
+}
+
 // ---- API ----
 
 func (s *Server) handleGetKey(w http.ResponseWriter, r *http.Request) {
@@ -96,10 +144,14 @@ func (s *Server) handleGetKey(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, http.StatusInternalServerError, "Terjadi kesalahan")
 		return
 	}
-	writeJSON(w, http.StatusOK, keyJSON{
+	out := keyJSON{
 		Version: k.Version, KDF: k.KDF, Iterations: k.Iterations, Salt: k.Salt,
 		WrappedKey: k.WrappedDEK, WrapIV: k.WrapIV, Verifier: k.Verifier, VerifierIV: k.VerifierIV,
-	})
+	}
+	if r := k.Recovery; r != nil {
+		out.Recovery = &recoveryJSON{Iterations: r.Iterations, Salt: r.Salt, WrappedKey: r.WrappedDEK, WrapIV: r.WrapIV}
+	}
+	writeJSON(w, http.StatusOK, out)
 }
 
 func (s *Server) handleCreateKey(w http.ResponseWriter, r *http.Request) {
@@ -113,6 +165,7 @@ func (s *Server) handleCreateKey(w http.ResponseWriter, r *http.Request) {
 			KDF: in.KDF, Iterations: in.Iterations, Salt: in.Salt, WrappedDEK: in.WrappedKey, WrapIV: in.WrapIV,
 		},
 		Verifier: in.Verifier, VerifierIV: in.VerifierIV,
+		Recovery: in.Recovery.toWrap(),
 	})
 	var verr journal.ValidationError
 	switch {
@@ -160,6 +213,40 @@ func (s *Server) handleRewrapKey(w http.ResponseWriter, r *http.Request) {
 		writeJSONError(w, http.StatusBadRequest, verr.Error())
 	default:
 		slog.Error("ganti bungkus kunci", "err", err)
+		writeJSONError(w, http.StatusInternalServerError, "Terjadi kesalahan")
+	}
+}
+
+// PUT /api/jurnal/pemulihan: membuat atau mengganti kunci pemulihan.
+func (s *Server) handleSetRecovery(w http.ResponseWriter, r *http.Request) {
+	var in setRecoveryJSON
+	if !decodeJSON(w, r, &in) {
+		return
+	}
+	userID := currentUser(r).ID
+	switch err := s.auth.CheckPassword(r.Context(), userID, in.LoginPassword); {
+	case errors.Is(err, auth.ErrInvalidCredentials):
+		writeJSONError(w, http.StatusForbidden, "Password login salah.")
+		return
+	case errors.Is(err, auth.ErrTooManyAttempts):
+		writeJSONError(w, http.StatusTooManyRequests, err.Error())
+		return
+	case err != nil:
+		slog.Error("cek password", "err", err)
+		writeJSONError(w, http.StatusInternalServerError, "Terjadi kesalahan")
+		return
+	}
+	err := s.journal.SetRecovery(r.Context(), userID, *in.recoveryJSON.toWrap())
+	var verr journal.ValidationError
+	switch {
+	case err == nil:
+		w.WriteHeader(http.StatusNoContent)
+	case errors.Is(err, journal.ErrNotFound):
+		writeJSONError(w, http.StatusNotFound, err.Error())
+	case errors.As(err, &verr):
+		writeJSONError(w, http.StatusBadRequest, verr.Error())
+	default:
+		slog.Error("simpan kunci pemulihan", "err", err)
 		writeJSONError(w, http.StatusInternalServerError, "Terjadi kesalahan")
 	}
 }

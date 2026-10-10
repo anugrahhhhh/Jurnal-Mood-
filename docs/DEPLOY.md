@@ -146,11 +146,32 @@ Migrasi database berjalan otomatis saat aplikasi start.
 
 ## 8. Checklist sebelum mengundang orang
 
-- [ ] `https://<DOMAIN>` terbuka dengan gembok, dan `http://` diarahkan ke `https://`
-- [ ] Nomor kontak krisis sudah diverifikasi dan `verified: true`, sehingga halaman bantuan tanpa peringatan
-- [ ] Teks halaman `/privasi` dan `/bantuan` sudah dibaca dan sesuai kenyataan
-- [ ] Coba dari HP: daftar → buat passphrase → isi catatan → riwayat → kunci → buka lagi
-- [ ] Console browser bersih dari pelanggaran CSP (DevTools → Console)
+**Pemeriksaan otomatis** (dari komputer mana pun yang punya bash & curl):
+
+```bash
+bash scripts/smoke.sh https://<DOMAIN>
+```
+
+Memeriksa HTTPS, pengalihan http→https, header keamanan, cookie aman, API tanpa login, kontak krisis
+sudah diverifikasi, dan identitas pengelola sudah diisi.
+
+**Uji manual di HP sungguhan** (minimal satu Android + Chrome dan satu iPhone + Safari):
+
+- [ ] Daftar akun baru → centang persetujuan → buat passphrase → **simpan kunci pemulihan** (coba Salin & Unduh)
+- [ ] Isi catatan pertama (mood, tidur, aktivitas, catatan) → Simpan → muncul "Tersimpan ✓"
+- [ ] Beranda & Riwayat menampilkan catatan; ketuk tanggal di kalender → catatan terbaca
+- [ ] Tekan 🔓 Kunci → buka lagi dengan passphrase
+- [ ] "Lupa passphrase?" → pulihkan dengan kunci pemulihan → catatan lama tetap terbaca
+- [ ] Pengaturan → Unduh JSON/CSV → file terbuka dan berisi catatan
+- [ ] iPhone: Bagikan → Tambahkan ke Layar Utama → buka dari ikon → Pengaturan → aktifkan pengingat
+      dengan jam 2 menit lagi → notifikasi muncul (pastikan hari itu belum ada catatan)
+- [ ] Android: aktifkan pengingat dengan cara yang sama → notifikasi muncul
+- [ ] Mode gelap HP: semua teks tetap terbaca
+- [ ] Halaman /bantuan: nomor bisa diketuk dan langsung memanggil
+
+**Lainnya:**
+
+- [ ] Teks halaman `/privasi` dan `/syarat` sudah dibaca dan sesuai kenyataan
 - [ ] Ada minimal satu file di `deploy/backups/`, dan sudah dicoba restore ke database sementara
 - [ ] Salinan backup tersimpan di luar VPS
 - [ ] Firewall hanya membuka 22, 80, 443

@@ -127,6 +127,32 @@
 </section>
 {{end}}
 
+{{/* Panel kunci pemulihan. Argumen: teks tombol selesai. Kunci diisi recovery-ui.js
+     dan hanya ada di halaman selama panel tampil. */}}
+{{define "recovery-panel"}}
+<section class="card glass recovery-panel recovery-print" data-role="recovery-panel" hidden aria-labelledby="rec-title">
+  <h1 id="rec-title">Simpan kunci pemulihanmu</h1>
+  <p>Jika suatu hari kamu <strong>lupa passphrase</strong>, kunci ini satu-satunya cara membuka catatanmu lagi.
+    Kunci ini <strong>hanya ditampilkan sekali</strong> dan pengelola tidak bisa melihat atau mengirim ulang.</p>
+  <div class="recovery-code" data-role="recovery-code" translate="no"></div>
+  <div class="actions start no-print">
+    <button type="button" class="btn secondary small" data-action="recovery-copy">📋 Salin</button>
+    <button type="button" class="btn secondary small" data-action="recovery-download">⬇️ Unduh .txt</button>
+    <button type="button" class="btn secondary small" data-action="recovery-print">🖨️ Cetak</button>
+  </div>
+  <p class="notice no-print">Simpan di tempat aman yang <strong>terpisah dari passphrase</strong>, misalnya di pengelola
+    password atau dicetak dan disimpan di rumah. Siapa pun yang punya kunci ini <em>dan</em> password login-mu bisa membuka
+    catatanmu.</p>
+  <div class="form no-print">
+    <label class="check">
+      <input type="checkbox" data-field="recovery-saved">
+      <span>Saya sudah menyimpan kunci pemulihan di tempat aman.</span>
+    </label>
+    <button type="button" class="btn" data-action="recovery-done" disabled>{{.}}</button>
+  </div>
+</section>
+{{end}}
+
 {{/* Penunjuk langkah onboarding: akun → passphrase → catatan pertama. */}}
 {{define "steps"}}
 <ol class="steps-bar" aria-label="Langkah memulai">

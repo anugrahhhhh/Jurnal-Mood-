@@ -75,7 +75,7 @@ func navFor(path string) string {
 		return "hari-ini"
 	case path == "/riwayat":
 		return "riwayat"
-	case path == "/pengaturan", strings.HasPrefix(path, "/jurnal/ganti"), path == "/akun/password":
+	case path == "/pengaturan", strings.HasPrefix(path, "/jurnal/ganti"), path == "/akun/password", path == "/jurnal/pemulihan":
 		return "pengaturan"
 	case path == "/privasi":
 		return "privasi"

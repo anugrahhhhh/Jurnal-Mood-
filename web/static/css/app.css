@@ -658,6 +658,21 @@ details.card > summary { cursor: pointer; font-weight: 700; color: var(--accent-
 .form .consent { font-size: 14px; line-height: 1.45; }
 .form .consent strong { font-weight: 700; }
 
+/* Kunci pemulihan */
+.recovery-panel { scroll-margin-top: 84px; }
+.recovery-code span { display: inline-block; white-space: nowrap; }
+.recovery-code {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: clamp(18px, 4.6vw, 26px); font-weight: 700;
+  letter-spacing: 0.06em; text-align: center; word-break: break-all; padding: 16px; margin: 4px 0 14px;
+  border-radius: var(--radius-sm); background: var(--surface-raised); border: 2px dashed var(--sos-border); user-select: all;
+}
+@media print {
+  body * { visibility: hidden !important; }
+  .recovery-print, .recovery-print * { visibility: visible !important; }
+  .recovery-print { position: absolute; inset: 0 auto auto 0; width: 100%; box-shadow: none; border: 0; background: #fff; color: #000; }
+  .recovery-print .no-print { display: none !important; }
+}
+
 /* ---- Landing page ---- */
 .landing { display: flex; flex-direction: column; gap: 76px; padding: 8px 0 24px; }
 .lp-eyebrow {

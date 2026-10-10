@@ -1,7 +1,7 @@
 {{define "content"}}
 <div class="page page-narrow">
 {{template "steps" 2}}
-<section class="card glass">
+<section class="card glass" data-role="create-card">
   <h1>Buat passphrase jurnal</h1>
   <p>Passphrase jurnal mengenkripsi aktivitas dan catatanmu <strong>di perangkat ini</strong>, sebelum
     dikirim. Server hanya menyimpan data acak yang tidak bisa dibaca siapa pun, termasuk pengelola.</p>
@@ -31,5 +31,6 @@
     <button type="submit" class="btn">Buat &amp; buka jurnal</button>
   </form>
 </section>
+{{template "recovery-panel" "Lanjut ke catatan pertama"}}
 </div>
 {{end}}

@@ -132,6 +132,17 @@ Tidak ada kolom flag risiko di tabel mana pun.
 - Tes end-to-end Playwright (`npm run e2e`) di 4 ukuran layar: alur lengkap, tanpa error JS/CSP,
   tanpa scroll horizontal, navigasi yang benar per ukuran layar, dan mode gelap.
 
+### Tahap 9: Kesiapan peluncuran ✅ selesai (11 Okt 2026)
+- Git (repository lokal, akhir baris LF) dan `govulncheck`: 0 celah yang memengaruhi kode.
+- Identitas pengelola (OPERATOR_NAME, OPERATOR_CONTACT), halaman /syarat, usia minimum (MIN_AGE, bawaan 18),
+  kotak persetujuan wajib saat daftar dengan waktu persetujuan tercatat.
+- Kunci pemulihan passphrase (120 bit, dibuat di browser, hanya bungkusnya yang disimpan server):
+  ditampilkan sekali saat membuat jurnal, bisa dibuat ulang di Pengaturan, dipakai di /jurnal/pulihkan.
+- Ekspor semua catatan (JSON & CSV, didekripsi di browser, aman dari CSV injection).
+- Perintah admin (stats, recent-signups, reset-password, delete-user) dan ganti password login.
+- `scripts/smoke.sh` untuk pemeriksaan otomatis setelah deploy + checklist uji manual di HP.
+- **Masih perlu pemilik proyek:** isi identitas pengelola, verifikasi kontak krisis, deploy ke VPS, uji di HP sungguhan.
+
 ## Keputusan yang masih perlu Anda konfirmasi
 1. Pendaftaran lewat **kode undangan** (usulan saya) atau terbuka untuk umum?
 2. Daftar **kontak krisis** dan wilayahnya. Saya hanya menyiapkan contoh, dan nomornya wajib Anda verifikasi.
