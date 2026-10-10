@@ -66,6 +66,7 @@ test('perjalanan lengkap: daftar → passphrase → catat → beranda → riwaya
   await page.getByLabel('Email').fill(email);
   await page.getByLabel('Password login').fill(PASSWORD);
   await page.getByLabel('Ulangi password').fill(PASSWORD);
+  await page.locator('input[name="setuju"]').check();
   await page.getByRole('button', { name: 'Buat akun' }).click();
 
   // Langkah 2: passphrase jurnal

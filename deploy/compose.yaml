@@ -36,6 +36,9 @@ services:
       VAPID_PUBLIC_KEY: ${VAPID_PUBLIC_KEY:-}
       VAPID_PRIVATE_KEY: ${VAPID_PRIVATE_KEY:-}
       VAPID_SUBJECT: ${VAPID_SUBJECT:-}
+      OPERATOR_NAME: ${OPERATOR_NAME:-}
+      OPERATOR_CONTACT: ${OPERATOR_CONTACT:-}
+      MIN_AGE: ${MIN_AGE:-18}
     volumes:
       - ../config/crisis.yaml:/app/config/crisis.yaml:ro
     read_only: true

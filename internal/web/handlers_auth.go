@@ -67,6 +67,10 @@ func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 		fail(http.StatusUnprocessableEntity, "Konfirmasi password tidak sama.")
 		return
 	}
+	if r.PostFormValue("setuju") != "on" {
+		fail(http.StatusUnprocessableEntity, "Centang pernyataan usia dan persetujuan Syarat Penggunaan & Privasi untuk mendaftar.")
+		return
+	}
 
 	if err := s.auth.AllowSignup(s.clientIP(r)); err != nil {
 		fail(http.StatusTooManyRequests, err.Error())

@@ -57,6 +57,11 @@ func New(cfg config.Config, d Deps) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+	minAge := cfg.MinAge
+	if minAge == 0 {
+		minAge = 18
+	}
+	r.site = Site{OperatorName: cfg.OperatorName, OperatorContact: cfg.OperatorContact, MinAge: minAge}
 	static, err := fs.Sub(d.Assets, "static")
 	if err != nil {
 		return nil, fmt.Errorf("folder static: %w", err)

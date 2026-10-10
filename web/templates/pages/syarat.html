@@ -1,0 +1,55 @@
+{{define "content"}}
+<div class="page page-narrow">
+<article class="card glass prose">
+  <h1>Syarat Penggunaan</h1>
+  <p class="muted">Berlaku sejak 11 Oktober 2026. Dengan mendaftar, kamu menyetujui syarat ini dan
+    <a href="/privasi">halaman Privasi</a>.</p>
+  {{if not .Site.OperatorKnown}}
+  <p class="notice" role="note">Identitas pengelola belum diisi di konfigurasi server (OPERATOR_NAME dan
+    OPERATOR_CONTACT). Pengelola wajib mengisinya sebelum situs dipakai orang lain.</p>
+  {{end}}
+
+  <h2>1. Tentang layanan</h2>
+  <p>Jurnal Mood adalah alat pencatat mood, tidur, aktivitas, dan catatan pribadi untuk komunitas kecil.
+    Layanan ini dikelola oleh {{if .Site.OperatorName}}<strong>{{.Site.OperatorName}}</strong>{{else}}pengelola situs{{end}}
+    dan disediakan gratis, apa adanya, tanpa jaminan selalu tersedia.</p>
+
+  <h2>2. Bukan layanan medis atau darurat</h2>
+  <p>Jurnal Mood tidak memberikan diagnosis, saran medis, atau pertolongan darurat, dan bukan pengganti
+    psikolog, psikiater, atau tenaga kesehatan lain. Jika kamu atau orang lain sedang dalam bahaya, segera
+    hubungi layanan darurat. Lihat <a href="/bantuan">halaman bantuan krisis</a>.</p>
+
+  <h2>3. Usia minimum</h2>
+  <p>Kamu harus berusia minimal <strong>{{.Site.MinAge}} tahun</strong> untuk mendaftar. Jika belum, jangan membuat
+    akun dan bicarakan dengan orang tua, wali, atau orang dewasa yang kamu percaya.</p>
+
+  <h2>4. Akun dan passphrase</h2>
+  <ul>
+    <li>Kamu bertanggung jawab menjaga password login, passphrase jurnal, dan kunci pemulihan.</li>
+    <li>Passphrase jurnal dan kunci pemulihan tidak bisa dipulihkan oleh pengelola. Jika keduanya hilang,
+      catatan dan aktivitasmu tidak bisa dibuka lagi.</li>
+    <li>Gunakan satu akun untuk dirimu sendiri dan jangan membagikannya.</li>
+  </ul>
+
+  <h2>5. Penggunaan yang tidak diperbolehkan</h2>
+  <ul>
+    <li>Membuat akun massal, otomatis, atau atas nama orang lain.</li>
+    <li>Mencoba mengakses akun atau data orang lain, atau mengganggu kerja server.</li>
+    <li>Memakai layanan untuk hal yang melanggar hukum.</li>
+  </ul>
+  <p>Pengelola dapat menghapus akun yang melanggar syarat ini.</p>
+
+  <h2>6. Datamu</h2>
+  <p>Apa yang terenkripsi, apa yang terlihat pengelola, dan cara menghapus akun dijelaskan di
+    <a href="/privasi">halaman Privasi</a>. Kamu bisa mengunduh semua catatanmu dan menghapus akun kapan saja
+    dari halaman Pengaturan.</p>
+
+  <h2>7. Perubahan syarat</h2>
+  <p>Syarat ini bisa diperbarui. Perubahan penting akan diberitahukan di situs ini sebelum berlaku.</p>
+
+  <h2>8. Kontak</h2>
+  <p>{{if .Site.OperatorKnown}}Pertanyaan tentang syarat ini: <strong>{{.Site.OperatorName}}</strong>,
+    {{.Site.OperatorContact}}.{{else}}Hubungi pengelola komunitasmu.{{end}}</p>
+</article>
+</div>
+{{end}}

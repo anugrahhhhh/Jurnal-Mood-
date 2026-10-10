@@ -119,7 +119,7 @@ func TestRegisterLoginLogoutFlow(t *testing.T) {
 
 	resp := f.post("/daftar", url.Values{
 		"csrf": {token}, "invite": {invite}, "email": {"teman@contoh.id"},
-		"password": {"kuda-laut-biru-42"}, "password_confirm": {"kuda-laut-biru-42"},
+		"password": {"kuda-laut-biru-42"}, "password_confirm": {"kuda-laut-biru-42"}, "setuju": {"on"},
 	}, f.srv.URL)
 	if resp.StatusCode != http.StatusSeeOther || resp.Header.Get("Location") != "/jurnal/buat" {
 		t.Fatalf("daftar: status %d lokasi %q (mau langsung ke langkah passphrase)", resp.StatusCode, resp.Header.Get("Location"))
@@ -195,7 +195,7 @@ func TestRegisterFormErrorsKeepEmailNotPassword(t *testing.T) {
 	_, _, token := f.get("/daftar")
 	form := url.Values{
 		"csrf": {token}, "invite": {"SALAH-SALA-HSAL"}, "email": {"teman@contoh.id"},
-		"password": {"rahasia-sekali-123"}, "password_confirm": {"rahasia-sekali-123"},
+		"password": {"rahasia-sekali-123"}, "password_confirm": {"rahasia-sekali-123"}, "setuju": {"on"},
 	}
 	req, _ := http.NewRequest(http.MethodPost, f.srv.URL+"/daftar", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")

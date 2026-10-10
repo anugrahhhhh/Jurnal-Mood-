@@ -17,8 +17,9 @@
     <p class="muted center">Belum punya akun? <a href="/daftar">Daftar gratis</a></p>
     <details class="forgot">
       <summary>Lupa password login?</summary>
-      <p class="muted">Hubungi pengelola komunitasmu. Setelah memastikan itu memang kamu, pengelola bisa memberi
-        <strong>password sementara</strong>. Catatanmu tetap aman, karena passphrase jurnal tidak ikut berubah.</p>
+      <p class="muted">Hubungi pengelola{{if .Site.OperatorKnown}} (<strong>{{.Site.OperatorName}}</strong>, {{.Site.OperatorContact}}){{else}} komunitasmu{{end}}.
+        Setelah memastikan itu memang kamu, pengelola bisa memberi <strong>password sementara</strong>.
+        Catatanmu tetap aman, karena passphrase jurnal tidak ikut berubah.</p>
     </details>
   </section>
 

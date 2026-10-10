@@ -5,6 +5,18 @@
   <p>Jurnal Mood dibuat untuk dipakai sekelompok kecil teman dan komunitas. Halaman ini menjelaskan
     dengan jujur apa yang dilindungi, apa yang masih bisa dilihat pengelola situs, dan apa batasannya.</p>
 
+  <h2>👤 Pengelola</h2>
+  {{if .Site.OperatorKnown}}
+  <p>Situs ini dikelola oleh <strong>{{.Site.OperatorName}}</strong>. Pertanyaan atau permintaan tentang datamu
+    (misalnya akses, koreksi, atau penghapusan): {{.Site.OperatorContact}}.</p>
+  {{else}}
+  <p class="notice" role="note">Identitas pengelola belum diisi di konfigurasi server. Pengelola wajib mengisinya
+    (OPERATOR_NAME dan OPERATOR_CONTACT) sebelum situs dipakai orang lain.</p>
+  {{end}}
+  <p>Data diproses berdasarkan persetujuanmu saat mendaftar, dan hanya untuk menjalankan layanan ini.
+    Tidak dijual, tidak dibagikan ke pihak lain, dan tidak dipakai untuk iklan. Jika terjadi kebocoran data,
+    pengelola akan memberitahumu.</p>
+
   <h2>🔒 Yang terenkripsi di perangkatmu</h2>
   <p>Data ini dienkripsi di browsermu <strong>sebelum</strong> dikirim. Server, penyedia hosting, siapa pun
     yang memegang backup database, dan pengelola situs hanya melihat data acak yang tidak bisa dibaca:</p>

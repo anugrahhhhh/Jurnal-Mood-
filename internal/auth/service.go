@@ -130,7 +130,7 @@ func (s *Service) Register(ctx context.Context, email, password, invite string) 
 		}
 
 		err := tx.QueryRow(ctx,
-			`INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING id`,
+			`INSERT INTO users (email, password_hash, terms_accepted_at) VALUES ($1, $2, now()) RETURNING id`,
 			email, hash).Scan(&userID)
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) && pgErr.Code == "23505" { // unique_violation

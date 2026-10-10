@@ -19,7 +19,7 @@ func (f *flow) signUp(email string) string {
 	f.t.Helper()
 	_, _, token := f.get("/daftar")
 	resp := f.post("/daftar", url.Values{
-		"csrf": {token}, "email": {email}, "password": {testPassword}, "password_confirm": {testPassword},
+		"csrf": {token}, "email": {email}, "password": {testPassword}, "password_confirm": {testPassword}, "setuju": {"on"},
 	}, f.srv.URL)
 	if resp.StatusCode != http.StatusSeeOther {
 		f.t.Fatalf("daftar: status %d", resp.StatusCode)

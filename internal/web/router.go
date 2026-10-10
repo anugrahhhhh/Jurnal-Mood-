@@ -25,6 +25,7 @@ func (s *Server) Routes() http.Handler {
 		r.Get("/", s.handleHome)
 		r.Get("/bantuan", s.handleHelp) // sengaja bisa dibuka tanpa login
 		r.Get("/privasi", s.handlePrivacy)
+		r.Get("/syarat", s.handleTerms)
 		r.Get("/akun-dihapus", s.handleAccountDeleted)
 
 		r.Group(func(r chi.Router) {

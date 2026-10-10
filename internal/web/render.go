@@ -17,7 +17,18 @@ import (
 // Setiap halaman mendefinisikan blok "title" dan "content".
 type Renderer struct {
 	pages map[string]*template.Template
+	site  Site
 }
+
+// Site adalah informasi situs yang tersedia di setiap halaman.
+type Site struct {
+	OperatorName    string
+	OperatorContact string
+	MinAge          int
+}
+
+// OperatorKnown: identitas pengelola sudah diisi di konfigurasi.
+func (s Site) OperatorKnown() bool { return s.OperatorName != "" && s.OperatorContact != "" }
 
 var funcs = template.FuncMap{
 	"tel": telURL,
@@ -46,6 +57,7 @@ type PageData struct {
 	User  *auth.User // nil untuk tamu
 	CSRF  string     // token untuk field tersembunyi "csrf" di setiap form POST
 	Nav   string     // menu yang aktif di sidebar/tab bar, lihat navFor
+	Site  Site       // diisi otomatis oleh Renderer.Page
 	Data  any
 }
 
@@ -67,6 +79,8 @@ func navFor(path string) string {
 		return "pengaturan"
 	case path == "/privasi":
 		return "privasi"
+	case path == "/syarat":
+		return "syarat"
 	}
 	return ""
 }
@@ -78,6 +92,7 @@ func (r *Renderer) Page(w http.ResponseWriter, status int, name string, data Pag
 		http.Error(w, "Terjadi kesalahan", http.StatusInternalServerError)
 		return
 	}
+	data.Site = r.site
 	var buf bytes.Buffer
 	if err := t.ExecuteTemplate(&buf, "base", data); err != nil {
 		slog.Error("render template", "page", name, "err", err)

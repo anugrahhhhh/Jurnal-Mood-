@@ -85,6 +85,9 @@ func runServer() error {
 		return err
 	}
 	authSvc.SetSignupLimit(cfg.SignupsPerHour)
+	if cfg.OperatorName == "" || cfg.OperatorContact == "" {
+		slog.Warn("identitas pengelola belum diisi (OPERATOR_NAME, OPERATOR_CONTACT); wajib sebelum dipakai orang lain")
+	}
 
 	go purgeLoop(ctx, authSvc)
 

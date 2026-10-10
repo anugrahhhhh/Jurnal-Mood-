@@ -26,6 +26,11 @@ func (s *Server) handlePrivacy(w http.ResponseWriter, r *http.Request) {
 	s.render.Page(w, http.StatusOK, "privasi", page(r, "Privasi", nil))
 }
 
+// handleTerms: Syarat Penggunaan, bisa dibuka tanpa login.
+func (s *Server) handleTerms(w http.ResponseWriter, r *http.Request) {
+	s.render.Page(w, http.StatusOK, "syarat", page(r, "Syarat Penggunaan", nil))
+}
+
 func (s *Server) handleSettings(w http.ResponseWriter, r *http.Request) {
 	exists, ok := s.journalExists(w, r)
 	if !ok {

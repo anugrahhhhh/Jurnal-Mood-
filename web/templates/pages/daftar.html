@@ -23,6 +23,12 @@
       <label>Ulangi password
         <input type="password" name="password_confirm" autocomplete="new-password" required>
       </label>
+      <label class="check consent">
+        <input type="checkbox" name="setuju" required>
+        <span>Saya berusia minimal <strong>{{.Site.MinAge}} tahun</strong> dan menyetujui
+          <a href="/syarat" target="_blank" rel="noopener">Syarat Penggunaan</a> serta
+          <a href="/privasi" target="_blank" rel="noopener">Privasi</a>, termasuk pemrosesan skor mood dan jam tidur.</span>
+      </label>
       <button type="submit" class="btn">Buat akun</button>
     </form>
     <p class="muted center">Sudah punya akun? <a href="/masuk">Masuk</a></p>

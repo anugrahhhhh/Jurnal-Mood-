@@ -24,6 +24,13 @@ type Config struct {
 	TrustProxy bool
 	// SignupsPerHour: batas pendaftaran per IP per jam (SIGNUP_LIMIT_PER_HOUR, bawaan 5).
 	SignupsPerHour int
+	// Identitas pengelola untuk halaman privasi & syarat (UU PDP: pengendali data
+	// harus jelas). Kosong = halaman menampilkan peringatan "belum diisi".
+	OperatorName    string
+	OperatorContact string
+	// MinAge: usia minimum pengguna (bawaan 18; data anak di bawah 18 tahun
+	// butuh persetujuan orang tua menurut UU PDP).
+	MinAge int
 	// Kunci VAPID untuk pengingat Web Push (opsional). Jika kosong, fitur
 	// pengingat disembunyikan. Buat dengan: go run ./cmd/server vapid
 	VAPIDPublicKey  string
@@ -63,6 +70,16 @@ func Load() (Config, error) {
 	case "false":
 	default:
 		return c, errors.New("TRUST_PROXY harus 'true' atau 'false', bukan " + v)
+	}
+	c.OperatorName = strings.TrimSpace(os.Getenv("OPERATOR_NAME"))
+	c.OperatorContact = strings.TrimSpace(os.Getenv("OPERATOR_CONTACT"))
+	c.MinAge = 18
+	if v := os.Getenv("MIN_AGE"); v != "" {
+		n, err := strconv.Atoi(v)
+		if err != nil || n < 13 || n > 25 {
+			return c, errors.New("MIN_AGE harus bilangan bulat 13 sampai 25")
+		}
+		c.MinAge = n
 	}
 	c.SignupsPerHour = 5
 	if v := os.Getenv("SIGNUP_LIMIT_PER_HOUR"); v != "" {

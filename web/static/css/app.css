@@ -655,6 +655,9 @@ details.card > summary { cursor: pointer; font-weight: 700; color: var(--accent-
 .forgot p { margin: 8px 0 0; }
 .settings-grid .menu + form { margin-top: 12px; }
 
+.form .consent { font-size: 14px; line-height: 1.45; }
+.form .consent strong { font-weight: 700; }
+
 /* ---- Landing page ---- */
 .landing { display: flex; flex-direction: column; gap: 76px; padding: 8px 0 24px; }
 .lp-eyebrow {
