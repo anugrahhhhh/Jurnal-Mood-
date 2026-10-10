@@ -217,3 +217,46 @@ test('halaman publik tampil rapi tanpa error', async ({ page }, testInfo) => {
   await checkLayout(page, 'publik-landing-gelap', testInfo, { signedIn: false });
   expect(errors).toEqual([]);
 });
+
+test('header dan footer publik: menu lipat, jangkar, footer', async ({ page }) => {
+  const errors = watchErrors(page);
+  await page.goto('/');
+  const toggle = page.locator('.nav-toggle');
+  const menu = page.locator('.pubmenu');
+  const wide = (page.viewportSize()?.width ?? 0) >= 980;
+  if (wide) {
+    // Laptop: tautan lengkap di bar, tanpa tombol menu.
+    await expect(toggle).toBeHidden();
+    await expect(page.locator('.pubnav a[href="/#faq"]')).toBeVisible();
+    await expect(page.locator('.pubbar a[href="/daftar"]:visible')).toHaveCount(1);
+  } else {
+    await expect(toggle).toBeVisible();
+    await toggle.click();
+    await expect(menu).toHaveAttribute('open', '');
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(toggle).toBeFocused();
+    await toggle.click();
+    await page.locator('.pubmenu-panel a[href="/#faq"]').click();
+    await expect(menu).not.toHaveAttribute('open', '');
+    // Masuk & Daftar tetap bisa dicapai di layar sempit (di bar atau di menu).
+    await toggle.click();
+    await expect(page.locator('.pubbar a[href="/daftar"]:visible')).toHaveCount(1);
+    await page.keyboard.press('Escape');
+  }
+  // Jangkar tidak boleh tertutup bar lengket (scroll-margin-top).
+  await page.evaluate(() => { location.hash = ''; location.hash = '#faq'; });
+  await expect(async () => {
+    const top = await page.locator('#faq').evaluate((el) => el.getBoundingClientRect().top);
+    const bar = await page.locator('.pubbar').evaluate((el) => el.getBoundingClientRect().bottom);
+    expect(top).toBeGreaterThanOrEqual(bar - 1);
+  }).toPass();
+
+  const footer = page.locator('.site-footer');
+  await expect(footer.locator('.sf-crisis a[href="/bantuan"]')).toBeVisible();
+  for (const href of ['/privasi', '/syarat', '/daftar', '/masuk', '/#faq']) {
+    await expect(footer.locator(`a[href="${href}"]`)).toBeVisible();
+  }
+  await expect(footer).toContainText(`© ${new Date().getFullYear()} Jurnal Mood`);
+  expect(errors).toEqual([]);
+});

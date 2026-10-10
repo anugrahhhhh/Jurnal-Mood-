@@ -86,27 +86,83 @@
     <a href="/pengaturan" class="tab" {{if eq .Nav "pengaturan"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">⚙️</span>Akun</a>
   </nav>
 {{else}}
-  <header class="pubbar">
-    <a href="/" class="brand"><img src="/static/icons/icon-192.png" alt=""> <span>Jurnal Mood</span></a>
-    <nav class="pubnav" aria-label="Navigasi">
+  {{/* Laptop (>= 980px): tautan lengkap. Lebih sempit: menu lipat (<details>,
+       tetap berfungsi tanpa JavaScript; public-nav.js hanya menutupnya otomatis). */}}
+  <header class="pubbar" data-role="pubbar">
+    <a href="/" class="brand" aria-label="Jurnal Mood, halaman utama"><img src="/static/icons/icon-192.png" alt=""> <span>Jurnal Mood</span></a>
+    <nav class="pubnav" aria-label="Navigasi utama">
+      <a href="/#fitur" class="navlink">Fitur</a>
       <a href="/#cara-kerja" class="navlink">Cara kerja</a>
       <a href="/privasi" class="navlink" {{if eq .Nav "privasi"}}aria-current="page"{{end}}>Privasi</a>
       <a href="/#faq" class="navlink">FAQ</a>
+    </nav>
+    <div class="pubactions">
       {{/* Tautan bantuan krisis wajib selalu terlihat di setiap halaman (SPEC 4). */}}
       <a href="/bantuan" class="pill sos">☎ Bantuan krisis</a>
-      <a href="/masuk" class="btn secondary">Masuk</a>
-      <a href="/daftar" class="btn signup">Daftar</a>
-    </nav>
+      <a href="/masuk" class="btn secondary pub-btn">Masuk</a>
+      <a href="/daftar" class="btn pub-btn">Daftar</a>
+      <details class="pubmenu">
+        <summary class="nav-toggle" aria-label="Menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></summary>
+        <div class="pubmenu-panel">
+          <nav aria-label="Menu">
+            <a href="/#fitur"><span aria-hidden="true">✨</span> Fitur</a>
+            <a href="/#cara-kerja"><span aria-hidden="true">🔒</span> Cara kerja</a>
+            <a href="/privasi" {{if eq .Nav "privasi"}}aria-current="page"{{end}}><span aria-hidden="true">🛡️</span> Privasi</a>
+            <a href="/#faq"><span aria-hidden="true">💬</span> FAQ</a>
+            <a href="/bantuan"><span aria-hidden="true">☎</span> Bantuan krisis</a>
+          </nav>
+          <div class="pubmenu-actions">
+            <a href="/masuk" class="btn secondary">Masuk</a>
+            <a href="/daftar" class="btn">Daftar</a>
+          </div>
+        </div>
+      </details>
+    </div>
   </header>
 
   <main class="content" id="isi">
     {{template "content" .}}
   </main>
 
-  <footer class="footer">
-    <p>Jurnal Mood bukan layanan darurat dan bukan pengganti tenaga profesional kesehatan jiwa.
-      Jika kamu atau orang lain sedang dalam bahaya, <a href="/bantuan">hubungi bantuan sekarang</a>.</p>
-    <p class="footer-links"><a href="/#cara-kerja">Cara kerja</a> · <a href="/privasi">Privasi</a> · <a href="/syarat">Syarat</a> · <a href="/#faq">FAQ</a> · <a href="/daftar">Daftar</a> · <a href="/masuk">Masuk</a></p>
+  <footer class="site-footer">
+    <div class="sf-inner">
+      <section class="sf-crisis" aria-labelledby="sf-crisis-title">
+        <span class="sf-crisis-ico" aria-hidden="true">☎</span>
+        <div class="sf-crisis-text">
+          <p id="sf-crisis-title" class="sf-crisis-title">Sedang dalam bahaya atau butuh bantuan sekarang?</p>
+          <p>Jurnal Mood bukan layanan darurat dan bukan pengganti tenaga profesional kesehatan jiwa.</p>
+        </div>
+        <a href="/bantuan" class="btn sf-crisis-btn">Lihat kontak bantuan krisis</a>
+      </section>
+
+      <div class="sf-grid">
+        <div class="sf-brand">
+          <a href="/" class="brand"><img src="/static/icons/icon-192.png" alt=""> <span>Jurnal Mood</span></a>
+          <p>Pencatat mood, tidur, dan jurnal harian yang privat. Catatanmu dienkripsi di perangkatmu sendiri.</p>
+          <ul class="sf-badges" aria-label="Komitmen">
+            <li>🔒 Enkripsi di perangkat</li>
+            <li>🚫 Tanpa iklan &amp; pelacak</li>
+          </ul>
+        </div>
+        <nav class="sf-col" aria-labelledby="sf-produk">
+          <h2 id="sf-produk">Produk</h2>
+          <ul><li><a href="/#fitur">Fitur</a></li><li><a href="/#cara-kerja">Cara kerja</a></li><li><a href="/#mulai">Cara memulai</a></li><li><a href="/#faq">FAQ</a></li></ul>
+        </nav>
+        <nav class="sf-col" aria-labelledby="sf-akun">
+          <h2 id="sf-akun">Akun</h2>
+          <ul><li><a href="/daftar">Daftar gratis</a></li><li><a href="/masuk">Masuk</a></li></ul>
+        </nav>
+        <nav class="sf-col" aria-labelledby="sf-info">
+          <h2 id="sf-info">Informasi</h2>
+          <ul><li><a href="/privasi">Privasi</a></li><li><a href="/syarat">Syarat penggunaan</a></li><li><a href="/bantuan">Bantuan krisis</a></li></ul>
+        </nav>
+      </div>
+
+      <div class="sf-bottom">
+        <p>© {{.Site.Year}} Jurnal Mood{{if .Site.OperatorKnown}} · Dikelola oleh {{.Site.OperatorName}}{{end}}</p>
+        <p>Tanpa streak, tanpa tekanan. Catat sesukamu.</p>
+      </div>
+    </div>
   </footer>
 {{end}}
 </body>

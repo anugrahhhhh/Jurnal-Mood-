@@ -19,6 +19,7 @@ import { initReminders } from './reminders.js';
 import { api, ApiError, ctx, navigate, toast } from './http.js';
 import { passphraseStrength } from './entry-logic.js';
 import { getKey, lock, setKey } from './session-key.js';
+import './public-nav.js';
 
 document.addEventListener('htmx:configRequest', (e) => {
   const c = ctx();

@@ -58,7 +58,7 @@
   </section>
 
   {{/* ================= FITUR (BENTO) ================= */}}
-  <section class="lp-section" aria-labelledby="lp-fitur">
+  <section id="fitur" class="lp-section" aria-labelledby="lp-fitur">
     <div class="lp-head">
       <span class="lp-eyebrow">Fitur</span>
       <h2 id="lp-fitur">Sederhana setiap malam, jelas setiap bulan</h2>
@@ -97,6 +97,18 @@
         <h3>📱 Di semua perangkat</h3>
         <p class="muted">HP, tablet, atau laptop. Bisa dipasang di layar utama dan memberi pengingat harian bila kamu mau.</p>
         <div class="lp-devices" aria-hidden="true"><span class="d-phone"></span><span class="d-tab"></span><span class="d-lap"></span></div>
+      </article>
+      <article class="card glass lp-tile lp-tile-wide lp-tile-full">
+        <div class="lp-tile-text">
+          <h3>🔑 Datamu tetap milikmu</h3>
+          <p class="muted">Lupa passphrase? Pakai kunci pemulihan yang kamu simpan saat membuat jurnal. Unduh semua catatan
+            sebagai JSON atau CSV kapan saja, atau hapus akun beserta seluruh isinya secara permanen.</p>
+        </div>
+        <div class="lp-own" aria-hidden="true">
+          <span class="lp-own-code">7K2M-Q9XA-…</span>
+          <span class="lp-own-chip">⬇️ JSON</span>
+          <span class="lp-own-chip">⬇️ CSV</span>
+        </div>
       </article>
     </div>
   </section>
@@ -146,6 +158,32 @@
     </div>
   </section>
 
+  {{/* ================= CARA MEMULAI ================= */}}
+  <section id="mulai" class="lp-section" aria-labelledby="lp-mulai">
+    <div class="lp-head">
+      <span class="lp-eyebrow">Mulai</span>
+      <h2 id="lp-mulai">Siap dalam 3 langkah</h2>
+      <p class="lp-sub">Sekitar tiga menit di awal, lalu cukup semenit setiap hari.</p>
+    </div>
+    <ol class="lp-start">
+      <li class="card glass">
+        <span class="lp-start-num" aria-hidden="true">01</span>
+        <h3>Buat akun</h3>
+        <p class="muted">Cukup email dan password login. Tanpa kode undangan, tanpa kartu kredit.</p>
+      </li>
+      <li class="card glass">
+        <span class="lp-start-num" aria-hidden="true">02</span>
+        <h3>Buat passphrase jurnal</h3>
+        <p class="muted">Passphrase ini mengunci isi catatanmu. Kamu juga mendapat <strong>kunci pemulihan</strong> untuk disimpan.</p>
+      </li>
+      <li class="card glass">
+        <span class="lp-start-num" aria-hidden="true">03</span>
+        <h3>Catat malam ini</h3>
+        <p class="muted">Pilih mood, atur jam tidur, tandai aktivitas. Selesai dalam semenit.</p>
+      </li>
+    </ol>
+  </section>
+
   {{/* ================= FAQ ================= */}}
   <section id="faq" class="lp-section" aria-labelledby="faq-judul">
     <div class="lp-head">
@@ -159,13 +197,21 @@
         <p>Hanya kamu. Catatan dan aktivitas dienkripsi di perangkatmu. Skor mood dan jam tidur disimpan tanpa enkripsi
           agar grafik bisa dibuat, dan itu bisa dilihat pengelola. Semuanya dijelaskan di <a href="/privasi">halaman privasi</a>.</p></details>
       <details class="card glass"><summary>Bagaimana kalau aku lupa passphrase jurnal?</summary>
-        <p>Catatan dan aktivitas tidak bisa dipulihkan oleh siapa pun, termasuk pengelola. Skor mood dan jam tidur tetap ada.
-          Simpan passphrase di pengelola password atau di kertas di tempat aman.</p></details>
+        <p>Pakai <strong>kunci pemulihan</strong> yang ditampilkan saat kamu membuat jurnal: di halaman Buka jurnal, pilih
+          “Pakai kunci pemulihan”, lalu buat passphrase baru. Tanpa passphrase dan tanpa kunci pemulihan, catatan dan aktivitas
+          tidak bisa dibuka oleh siapa pun, termasuk pengelola. Skor mood dan jam tidur tetap ada.</p></details>
+      <details class="card glass"><summary>Apa itu kunci pemulihan dan di mana menyimpannya?</summary>
+        <p>Kode 24 karakter yang bisa membuka jurnalmu jika passphrase terlupa. Kode ini hanya ditampilkan sekali dan
+          pengelola tidak bisa melihatnya. Simpan terpisah dari passphrase, misalnya di pengelola password atau dicetak.
+          Kalau hilang, buat kunci baru di Pengaturan → Kunci pemulihan.</p></details>
       <details class="card glass"><summary>Bagaimana kalau aku lupa password login?</summary>
         <p>Hubungi pengelola komunitasmu. Setelah memastikan itu memang kamu, pengelola bisa memberi password sementara,
           lalu kamu membuat password baru saat masuk. Catatanmu tetap aman, karena passphrase jurnal tidak ikut berubah.</p></details>
       <details class="card glass"><summary>Apa bedanya password login dan passphrase jurnal?</summary>
         <p>Password login untuk masuk ke akun. Passphrase jurnal untuk mengunci isi catatanmu dan tidak pernah dikirim ke server.</p></details>
+      <details class="card glass"><summary>Bisakah aku mengunduh semua catatanku?</summary>
+        <p>Bisa. Di Pengaturan → Data kamu, unduh sebagai JSON atau CSV (bisa dibuka di Excel). File dibuat di perangkatmu
+          setelah jurnal dibuka, jadi isinya terbaca dan tidak terenkripsi. Simpan di tempat yang aman.</p></details>
       <details class="card glass"><summary>Bisa dipakai di HP dan laptop sekaligus?</summary>
         <p>Bisa. Masuk dengan akun yang sama dan buka jurnal dengan passphrase yang sama di setiap perangkat. Di HP, kamu juga bisa menambahkannya ke layar utama.</p></details>
       <details class="card glass"><summary>Apakah ini pengganti psikolog atau layanan darurat?</summary>

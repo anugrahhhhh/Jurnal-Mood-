@@ -4,8 +4,10 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"moodjournal/internal/auth"
 	"moodjournal/internal/config"
@@ -72,5 +74,15 @@ func TestTermsAndOperatorInfo(t *testing.T) {
 	}
 	if body := get(h, "/syarat").Body.String(); !strings.Contains(body, "21 tahun") {
 		t.Error("usia minimum dari konfigurasi harus tampil")
+	}
+
+	// Footer publik: tahun berjalan, nama pengelola, dan ajakan bantuan krisis.
+	footer := get(h, "/").Body.String()
+	footer = footer[strings.Index(footer, `<footer class="site-footer">`):]
+	year := strconv.Itoa(time.Now().Year())
+	for _, want := range []string{"© " + year + " Jurnal Mood", "Dikelola oleh Komunitas Tenang", `class="btn sf-crisis-btn"`, `href="/bantuan"`} {
+		if !strings.Contains(footer, want) {
+			t.Errorf("footer harus berisi %q", want)
+		}
 	}
 }

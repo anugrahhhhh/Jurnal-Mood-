@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"time"
 
 	"moodjournal/internal/auth"
 )
@@ -29,6 +30,9 @@ type Site struct {
 
 // OperatorKnown: identitas pengelola sudah diisi di konfigurasi.
 func (s Site) OperatorKnown() bool { return s.OperatorName != "" && s.OperatorContact != "" }
+
+// Year: tahun berjalan untuk catatan hak cipta di footer.
+func (s Site) Year() int { return time.Now().Year() }
 
 var funcs = template.FuncMap{
 	"tel": telURL,
