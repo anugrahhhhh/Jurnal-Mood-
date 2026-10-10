@@ -1,0 +1,12 @@
+{
+  "name": "moodjournal-tests",
+  "private": true,
+  "description": "Tes JavaScript (Node) dan end-to-end (Playwright + Chrome) untuk Jurnal Mood.",
+  "scripts": {
+    "test:js": "node --test \"tests/js/*.test.mjs\"",
+    "e2e": "playwright test --config tests/e2e/playwright.config.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.0"
+  }
+}

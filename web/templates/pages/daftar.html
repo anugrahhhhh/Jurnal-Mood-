@@ -1,0 +1,44 @@
+{{define "content"}}
+<div class="auth">
+  <section class="card glass">
+    <h1>Daftar gratis</h1>
+    <p class="muted">Cukup email dan password. Setelah itu kamu membuat passphrase jurnal untuk mengunci catatanmu.</p>
+    {{with .Data.Error}}<p class="error" role="alert">{{.}}</p>{{end}}
+    <form method="post" action="/daftar" class="form" hx-boost="false">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      {{if .Data.InviteRequired}}
+      <label>Kode undangan
+        <input type="text" name="invite" value="{{.Data.Invite}}" autocomplete="off" autocapitalize="characters"
+               placeholder="XXXX-XXXX-XXXX" required>
+        <span class="hint">Pendaftaran sedang khusus undangan. Minta kode atau tautan undangan ke pengelola komunitasmu.</span>
+      </label>
+      {{end}}
+      <label>Email
+        <input type="email" name="email" value="{{.Data.Email}}" autocomplete="email" inputmode="email" required>
+      </label>
+      <label>Password login
+        <input type="password" name="password" autocomplete="new-password" minlength="{{.Data.MinPasswordLen}}" required>
+        <span class="hint">Minimal {{.Data.MinPasswordLen}} karakter.</span>
+      </label>
+      <label>Ulangi password
+        <input type="password" name="password_confirm" autocomplete="new-password" required>
+      </label>
+      <button type="submit" class="btn">Buat akun</button>
+    </form>
+    <p class="muted center">Sudah punya akun? <a href="/masuk">Masuk</a></p>
+  </section>
+
+  <aside class="card glass auth-aside" aria-label="Sebelum mendaftar">
+    <h2>Yang perlu kamu tahu</h2>
+    <ul>
+      <li><b aria-hidden="true">1️⃣</b><span><strong>Buat akun</strong> dengan email dan password login.</span></li>
+      <li><b aria-hidden="true">2️⃣</b><span><strong>Buat passphrase jurnal.</strong> Passphrase ini mengenkripsi catatanmu dan
+        <strong>tidak bisa dipulihkan</strong> oleh siapa pun jika lupa.</span></li>
+      <li><b aria-hidden="true">3️⃣</b><span><strong>Isi catatan pertama.</strong> Cukup satu menit.</span></li>
+    </ul>
+    <p class="notice">Jurnal Mood adalah alat pencatat pribadi, bukan layanan darurat dan bukan pengganti tenaga
+      profesional. Dalam keadaan darurat, buka <a href="/bantuan">halaman bantuan</a>.</p>
+    <p class="muted"><a href="/privasi">Apa yang terenkripsi dan apa yang terlihat pengelola →</a></p>
+  </aside>
+</div>
+{{end}}

@@ -1,0 +1,21 @@
+{{define "content"}}
+<div class="page page-narrow">
+<section class="card glass">
+  <h1>Buka jurnal</h1>
+  <p class="notice" data-role="locked-reason" hidden></p>
+  <p>Masukkan passphrase jurnal. Passphrase hanya dipakai di perangkat ini dan tidak dikirim ke server.</p>
+
+  <noscript><p class="error">Jurnal membutuhkan JavaScript untuk membuka kunci di perangkatmu.</p></noscript>
+
+  <form class="form" data-form="journal-unlock" hx-boost="false" autocomplete="off">
+    <p class="error" data-role="error" role="alert" hidden></p>
+    <label>Passphrase jurnal
+      <input type="password" data-field="passphrase" autocomplete="off" required data-autofocus>
+    </label>
+    <button type="submit" class="btn">Buka</button>
+  </form>
+  <p class="muted">Lupa passphrase? Catatan dan aktivitas tidak bisa dipulihkan, tapi skor mood dan
+    jam tidur tetap tersimpan.</p>
+</section>
+</div>
+{{end}}

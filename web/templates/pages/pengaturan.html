@@ -1,0 +1,79 @@
+{{define "content"}}
+<div class="page page-wide">
+<div class="page-head"><div><h1>Pengaturan</h1><p class="muted">Akun, jurnal, pengingat, dan data</p></div></div>
+
+{{with .Data.Notice}}<p class="notice ok-notice" role="status">✓ {{.}}</p>{{end}}
+
+<div class="settings-grid">
+  <section class="card glass" aria-labelledby="set-account">
+    <h2 id="set-account">Akun</h2>
+    <p class="muted">Masuk sebagai</p>
+    <p class="account-email">{{.User.Email}}</p>
+    {{/* hx-boost="false": keluar memuat ulang halaman penuh agar kunci di memori terhapus. */}}
+    <ul class="menu">
+      <li><a href="/akun/password"><span class="ico" aria-hidden="true">🔐</span><span>Ganti password login</span></a></li>
+    </ul>
+    <form method="post" action="/keluar" class="inline" hx-boost="false">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <button type="submit" class="btn secondary">Keluar</button>
+    </form>
+  </section>
+
+  <section class="card glass" aria-labelledby="set-journal">
+    <h2 id="set-journal">Jurnal</h2>
+    <ul class="menu">
+      {{if .Data.HasJournalKey}}
+      <li><a href="/jurnal/ganti"><span class="ico" aria-hidden="true">🔑</span><span>Ganti passphrase jurnal</span></a></li>
+      <li class="if-unlocked"><button type="button" data-action="lock"><span class="ico" aria-hidden="true">🔓</span><span>Kunci jurnal sekarang</span></button></li>
+      <li class="if-locked"><a href="/jurnal/buka"><span class="ico" aria-hidden="true">🔒</span><span>Buka jurnal</span></a></li>
+      {{else}}
+      <li><a href="/jurnal/buat"><span class="ico" aria-hidden="true">🔑</span><span>Buat passphrase jurnal</span></a></li>
+      {{end}}
+      <li><a href="/privasi"><span class="ico" aria-hidden="true">🛡️</span><span>Privasi: apa yang terenkripsi dan apa yang terlihat</span></a></li>
+      <li><a href="/bantuan"><span class="ico" aria-hidden="true">☎</span><span>Kontak bantuan krisis</span></a></li>
+    </ul>
+  </section>
+
+{{if .Data.RemindersEnabled}}
+  <section class="card glass span-all" data-page="reminders" aria-labelledby="set-reminder">
+    <h2 id="set-reminder">Pengingat harian</h2>
+    <p>Notifikasi di <strong>perangkat ini</strong> jika kamu belum mencatat hari itu. Isinya selalu umum,
+      tanpa mood atau isi jurnal, dan tanpa hitungan hari beruntun.</p>
+    <p class="notice" data-role="reminder-status" role="status">Memeriksa…</p>
+    <noscript><p class="error">Pengingat membutuhkan JavaScript.</p></noscript>
+    <div class="form" data-role="reminder-form" hidden>
+      <label>Jam pengingat
+        <input type="time" data-field="reminder-time" value="21:00" step="900">
+        <span class="hint">Mengikuti zona waktu perangkat ini (<span data-role="reminder-tz"></span>).</span>
+      </label>
+      <div class="actions start">
+        <button type="button" class="btn" data-action="reminder-enable">Aktifkan pengingat</button>
+        <button type="button" class="btn secondary" data-action="reminder-disable" hidden>Matikan</button>
+      </div>
+    </div>
+  </section>
+{{end}}
+
+  <section class="card glass danger-zone span-all" aria-labelledby="set-delete">
+    <h2 id="set-delete">Hapus akun</h2>
+    <p>Menghapus akun, semua entri, kunci jurnal, dan pengaturanmu secara permanen. Tindakan ini
+      <strong>tidak bisa dibatalkan</strong>.</p>
+    {{with .Data.Error}}<p class="error" role="alert">{{.}}</p>{{end}}
+    <details class="danger-details" {{if .Data.Error}}open{{end}}>
+    <summary class="btn secondary danger-outline">Hapus akun…</summary>
+    {{/* hx-boost="false": setelah akun dihapus, halaman dimuat ulang penuh agar kunci di memori ikut hilang. */}}
+    <form method="post" action="/akun/hapus" class="form" hx-boost="false">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <label>Password login
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <label><span>Ketik <strong>{{.Data.ConfirmWord}}</strong> untuk mengonfirmasi</span>
+        <input type="text" name="confirm" autocomplete="off" autocapitalize="characters" required>
+      </label>
+      <button type="submit" class="btn danger">Hapus akun selamanya</button>
+    </form>
+    </details>
+  </section>
+</div>
+</div>
+{{end}}

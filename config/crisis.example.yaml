@@ -1,0 +1,38 @@
+# Kontak bantuan krisis yang ditampilkan di halaman /bantuan.
+#
+# PENTING: ini hanya CONTOH. Salin file ini menjadi config/crisis.yaml,
+# periksa sendiri setiap nomor (masih aktif, jam layanan, wilayah), lalu
+# ubah `verified` menjadi true. Selama false, halaman bantuan menampilkan
+# peringatan bahwa daftar belum diverifikasi.
+#
+# Diperbarui 10 Okt 2026 dari pencarian web (bukan verifikasi langsung):
+# layanan Kemenkes 119 ext 8 kini bernama Healing119.id (diaktifkan kembali
+# Juli 2025); antrean telepon dilaporkan panjang, situsnya disarankan.
+# Nomor WhatsApp Healing119 berbeda-beda di berbagai sumber, jadi sengaja
+# tidak dicantumkan. Cek nomor resminya di healing119.id jika ingin menambah.
+#
+# phone : teks yang ditampilkan
+# dial  : nomor untuk tautan telepon (opsional; default = phone)
+
+region: Indonesia
+verified: false
+
+emergency:
+  - name: Nomor darurat nasional
+    phone: "112"
+    hours: 24 jam
+  - name: Ambulans (layanan gawat darurat)
+    phone: "119"
+    hours: 24 jam
+  - name: IGD rumah sakit terdekat
+    note: Jika kamu atau orang lain dalam bahaya langsung, datang ke IGD terdekat.
+
+counseling:
+  - name: Healing119.id (Kemenkes RI)
+    phone: "119 ext 8"
+    dial: "119"
+    url: https://healing119.id
+    hours: 24 jam, gratis
+    note: Setelah tersambung, pilih ekstensi 8. Jika antrean telepon panjang, gunakan layanan di situsnya.
+  - name: Puskesmas atau rumah sakit terdekat
+    note: Banyak puskesmas dan RSUD menyediakan layanan psikolog atau kesehatan jiwa.

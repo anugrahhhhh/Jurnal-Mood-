@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.example
+.superpowers/
+bin/
+backups/
+deploy/
+docs/
+tests/
+*.exe

@@ -1,0 +1,87 @@
+{{define "content"}}
+<div class="page page-wide">
+{{if .Data.HasJournalKey}}
+  {{/* Isi kartu diisi dashboard.js. Mood & jam tidur tidak terenkripsi, jadi
+       tampil walau jurnal terkunci; pola aktivitas butuh jurnal terbuka. */}}
+  <div data-page="dashboard">
+    <div class="page-head">
+      <div>
+        <h1 data-role="greeting">Halo 👋</h1>
+        <p class="muted" data-role="today-date"></p>
+      </div>
+      <a href="/hari-ini" class="btn hide-on-tabbar" data-role="cta">＋ Isi catatan hari ini</a>
+    </div>
+
+    {{template "gentle" .}}
+
+    <div class="dash-grid">
+      <section class="card glass today-card" aria-labelledby="dash-today">
+        <h2 id="dash-today" class="row-head">Hari ini</h2>
+        <div data-role="today-empty" hidden>
+          <p class="muted">Belum diisi. Bagaimana harimu?</p>
+          <div class="today-faces" role="group" aria-label="Pilih mood untuk mulai mencatat">
+            <a href="/hari-ini?mood=1" aria-label="Sangat buruk">😣</a>
+            <a href="/hari-ini?mood=2" aria-label="Buruk">😕</a>
+            <a href="/hari-ini?mood=3" aria-label="Biasa">😐</a>
+            <a href="/hari-ini?mood=4" aria-label="Baik">🙂</a>
+            <a href="/hari-ini?mood=5" aria-label="Sangat baik">😄</a>
+          </div>
+          <p class="hint">Ketuk wajah untuk mulai. Tidur, aktivitas, dan catatan bisa ditambah setelahnya.</p>
+        </div>
+        <div data-role="today-done" hidden>
+          <div class="today-done">
+            <span class="face" data-role="today-face" aria-hidden="true"></span>
+            <div><strong data-role="today-label"></strong><div class="muted" data-role="today-sleep"></div></div>
+          </div>
+          <a href="/hari-ini" class="btn secondary small">Ubah catatan hari ini</a>
+        </div>
+        <p class="muted skeleton" data-role="today-loading">Memuat…</p>
+
+        <h2 class="row-head">7 hari terakhir</h2>
+        <div class="chart" data-role="week-chart" aria-live="polite"></div>
+      </section>
+
+      <div class="stat-row">
+        <section class="card glass" aria-labelledby="dash-sleep">
+          <h2 id="dash-sleep" class="row-head">Tidur rata-rata</h2>
+          <div class="stat" data-role="avg-sleep">–</div>
+          <p class="delta" data-role="avg-sleep-delta"></p>
+        </section>
+        <section class="card glass" aria-labelledby="dash-mood">
+          <h2 id="dash-mood" class="row-head">Mood rata-rata</h2>
+          <div class="stat" data-role="avg-mood">–</div>
+          <p class="delta" data-role="filled-days"></p>
+        </section>
+      </div>
+
+      <section class="card glass" aria-labelledby="dash-month">
+        <div class="cal-head"><h2 id="dash-month" data-role="month-title">Bulan ini</h2><a href="/riwayat" class="link">Riwayat →</a></div>
+        <div class="cal mini" data-role="month-cal"></div>
+      </section>
+
+      <section class="card glass span-2" aria-labelledby="dash-acts">
+        <h2 id="dash-acts" class="row-head">Sering bersama mood baik</h2>
+        <div class="if-unlocked">
+          <div class="chips" data-role="top-activities"></div>
+          <p class="hint" data-role="acts-note">Dihitung di perangkat ini dari catatan terenkripsimu. Ini pola, bukan sebab-akibat.</p>
+        </div>
+        <div class="if-locked">
+          <p class="muted">Pola aktivitas dihitung dari catatan terenkripsi, jadi perlu jurnal yang terbuka.</p>
+          <a href="/jurnal/buka?lanjut=%2Fberanda" class="btn secondary small">🔒 Buka jurnal</a>
+        </div>
+      </section>
+    </div>
+  </div>
+{{else}}
+  <div class="page-narrow page">
+    {{template "steps" 2}}
+    <section class="card glass">
+      <h1>Satu langkah lagi</h1>
+      <p>Sebelum mulai mencatat, buat <strong>passphrase jurnal</strong>. Passphrase ini mengenkripsi
+        aktivitas dan catatanmu di perangkatmu sendiri.</p>
+      <a href="/jurnal/buat" class="btn">Buat passphrase jurnal</a>
+    </section>
+  </div>
+{{end}}
+</div>
+{{end}}

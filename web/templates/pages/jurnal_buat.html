@@ -1,0 +1,35 @@
+{{define "content"}}
+<div class="page page-narrow">
+{{template "steps" 2}}
+<section class="card glass">
+  <h1>Buat passphrase jurnal</h1>
+  <p>Passphrase jurnal mengenkripsi aktivitas dan catatanmu <strong>di perangkat ini</strong>, sebelum
+    dikirim. Server hanya menyimpan data acak yang tidak bisa dibaca siapa pun, termasuk pengelola.</p>
+
+  <div class="notice">
+    <p><strong>Passphrase ini tidak bisa dipulihkan.</strong> Jika lupa, catatan dan aktivitasmu
+      hilang selamanya. Skor mood dan jam tidur tetap ada.</p>
+    <p>Passphrase berbeda dari password login. Tips: gunakan 4 kata acak atau lebih, misalnya
+      <em>"kopi jendela hujan sepeda"</em>, lalu simpan di pengelola password atau di kertas di tempat aman.</p>
+  </div>
+
+  <noscript><p class="error">Jurnal membutuhkan JavaScript untuk mengenkripsi data di perangkatmu.</p></noscript>
+
+  {{/* Input sengaja tanpa atribut name: passphrase tidak pernah dikirim ke server. */}}
+  <form class="form" data-form="journal-create" hx-boost="false" autocomplete="off">
+    <p class="error" data-role="error" role="alert" hidden></p>
+    <label>Passphrase jurnal
+      <input type="password" data-field="passphrase" autocomplete="off" minlength="12" required data-autofocus data-strength>
+    </label>
+    <label>Ulangi passphrase
+      <input type="password" data-field="passphrase-confirm" autocomplete="off" required>
+    </label>
+    <label class="check">
+      <input type="checkbox" data-field="understand" required>
+      <span>Saya paham passphrase ini tidak bisa dipulihkan oleh siapa pun.</span>
+    </label>
+    <button type="submit" class="btn">Buat &amp; buka jurnal</button>
+  </form>
+</section>
+</div>
+{{end}}

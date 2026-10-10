@@ -1,0 +1,7 @@
+# Caddy mengurus sertifikat HTTPS (Let's Encrypt) secara otomatis untuk {$DOMAIN}.
+# Sengaja tanpa direktif "log": Caddy tidak menulis log akses (alamat IP), sesuai
+# halaman privasi.
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:8080
+}

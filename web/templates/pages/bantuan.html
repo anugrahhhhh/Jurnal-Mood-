@@ -1,0 +1,47 @@
+{{define "content"}}
+<div class="page page-narrow">
+{{with .Data}}
+<section class="card glass">
+  <h1>Bantuan krisis</h1>
+  <p>Jika kamu sedang dalam bahaya, atau terpikir untuk menyakiti diri sendiri, hubungi
+    layanan darurat sekarang. Kamu tidak harus menghadapinya sendirian.</p>
+
+  {{if not .Verified}}
+  <p class="notice" role="note">Daftar ini masih contoh dan belum diverifikasi oleh pengelola.
+    Pastikan nomornya benar sebelum mengandalkannya.</p>
+  {{end}}
+
+  <h2>Darurat{{if .Region}} · {{.Region}}{{end}}</h2>
+  <ul class="contacts">
+    {{range .Emergency}}{{template "contact" .}}{{end}}
+  </ul>
+
+  {{if .Counseling}}
+  <h2>Konseling &amp; dukungan</h2>
+  <ul class="contacts">
+    {{range .Counseling}}{{template "contact" .}}{{end}}
+  </ul>
+  {{end}}
+</section>
+
+<section class="card glass">
+  <h2>Tentang Jurnal Mood</h2>
+  <p>Jurnal Mood adalah alat pencatat pribadi. Ini bukan layanan darurat, tidak memberikan diagnosis,
+    dan bukan pengganti tenaga profesional. Karena catatanmu terenkripsi, situs ini tidak bisa membaca
+    isinya dan tidak bisa mengetahui jika kamu sedang dalam keadaan darurat.</p>
+</section>
+{{end}}
+</div>
+{{end}}
+
+{{define "contact"}}
+<li class="contact">
+  <div class="contact-name">{{.Name}}</div>
+  {{if .Phone}}{{$tel := tel (or .Dial .Phone)}}
+    {{if $tel}}<a class="contact-phone" href="{{$tel}}">{{.Phone}}</a>{{else}}<span class="contact-phone">{{.Phone}}</span>{{end}}
+  {{end}}
+  {{if .Hours}}<div class="muted">{{.Hours}}</div>{{end}}
+  {{if .Note}}<div class="muted">{{.Note}}</div>{{end}}
+  {{if .URL}}<a href="{{.URL}}" rel="noopener noreferrer" target="_blank">{{.URL}}</a>{{end}}
+</li>
+{{end}}

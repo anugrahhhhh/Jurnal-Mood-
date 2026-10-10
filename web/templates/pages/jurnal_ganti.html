@@ -1,0 +1,29 @@
+{{define "content"}}
+<div class="page page-narrow">
+<section class="card glass">
+  <h1>Ganti passphrase jurnal</h1>
+  <p>Catatan lama tetap bisa dibaca dengan passphrase baru, karena hanya bungkus kuncinya yang diganti.</p>
+
+  <noscript><p class="error">Fitur ini membutuhkan JavaScript.</p></noscript>
+
+  <form class="form" data-form="journal-change" hx-boost="false" autocomplete="off">
+    <p class="error" data-role="error" role="alert" hidden></p>
+    <label>Passphrase lama
+      <input type="password" data-field="old-passphrase" autocomplete="off" required data-autofocus>
+    </label>
+    <label>Passphrase baru
+      <input type="password" data-field="new-passphrase" autocomplete="off" minlength="12" required data-strength>
+      <span class="hint">Minimal 12 karakter. Passphrase baru juga tidak bisa dipulihkan.</span>
+    </label>
+    <label>Ulangi passphrase baru
+      <input type="password" data-field="new-passphrase-confirm" autocomplete="off" required>
+    </label>
+    <label>Password login
+      <input type="password" data-field="login-password" autocomplete="current-password" required>
+      <span class="hint">Untuk memastikan ini benar-benar kamu.</span>
+    </label>
+    <button type="submit" class="btn">Ganti passphrase</button>
+  </form>
+</section>
+</div>
+{{end}}

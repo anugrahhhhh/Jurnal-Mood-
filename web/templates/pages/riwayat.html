@@ -1,0 +1,64 @@
+{{define "content"}}
+<div data-requires="unlocked" hidden></div>
+<div class="page page-wide">
+<noscript><p class="error">Riwayat membutuhkan JavaScript untuk membuka catatan terenkripsi di perangkatmu.</p></noscript>
+
+{{template "gentle" .}}
+
+<div class="history" data-page="history">
+  <div class="page-head">
+    <div><h1>Riwayat</h1><p class="muted" data-role="summary" aria-live="polite">Memuat…</p></div>
+    <div class="segmented" role="group" aria-label="Rentang grafik">
+      <button type="button" data-range="7" aria-pressed="false">Minggu</button>
+      <button type="button" data-range="30" aria-pressed="true">Bulan</button>
+      <button type="button" data-range="90" aria-pressed="false">3 bulan</button>
+      <button type="button" data-range="365" aria-pressed="false">Tahun</button>
+    </div>
+  </div>
+
+  <div class="history-top">
+    <section class="card glass" aria-labelledby="cal-title">
+      <div class="cal-head">
+        <h2 id="cal-title" data-role="cal-title">Kalender</h2>
+        <div class="cal-nav">
+          <button type="button" data-action="cal-prev" aria-label="Bulan sebelumnya">‹</button>
+          <button type="button" data-action="cal-next" aria-label="Bulan berikutnya">›</button>
+        </div>
+      </div>
+      <div class="cal" data-role="calendar" role="group" aria-labelledby="cal-title"></div>
+      <div class="cal-legend" aria-hidden="true">Mood:
+        <span><i class="lg-1"></i>Sangat buruk</span><span><i class="lg-2"></i>Buruk</span><span><i class="lg-3"></i>Biasa</span>
+        <span><i class="lg-4"></i>Baik</span><span><i class="lg-5"></i>Sangat baik</span><span><i class="lg-0"></i>Kosong</span>
+      </div>
+    </section>
+
+    <section class="card glass day-detail" data-role="day-detail" aria-live="polite">
+      <p class="muted">Pilih tanggal di kalender untuk melihat catatannya.</p>
+    </section>
+  </div>
+
+  <div class="charts-row">
+    <section class="card glass"><h2 class="row-head">Mood</h2><div class="chart" data-role="mood-chart"></div></section>
+    <section class="card glass"><h2 class="row-head">Tidur</h2><div class="chart" data-role="sleep-chart"></div></section>
+  </div>
+
+  <section class="card glass charts-row-gap">
+    <h2 class="row-head">Aktivitas &amp; mood</h2>
+    <p class="hint">Dihitung di perangkat ini dari catatan terenkripsimu. Ini hanya pola, bukan sebab-akibat.</p>
+    <ul class="comparison" data-role="comparison"></ul>
+    <p class="muted" data-role="comparison-empty">Belum cukup data. Perbandingan muncul setelah sebuah
+      aktivitas tercatat minimal 3 hari (dan ada minimal 3 hari tanpa aktivitas itu).</p>
+  </section>
+
+  <details class="card glass">
+    <summary>Lihat sebagai tabel</summary>
+    <div class="table-wrap">
+      <table data-role="table">
+        <thead><tr><th scope="col">Tanggal</th><th scope="col">Mood</th><th scope="col">Tidur</th><th scope="col">Aktivitas</th><th scope="col">Catatan</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+</div>
+</div>
+{{end}}

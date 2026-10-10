@@ -1,0 +1,78 @@
+{{define "content"}}
+<div class="page page-narrow">
+<article class="card glass prose">
+  <h1>Privasi</h1>
+  <p>Jurnal Mood dibuat untuk dipakai sekelompok kecil teman dan komunitas. Halaman ini menjelaskan
+    dengan jujur apa yang dilindungi, apa yang masih bisa dilihat pengelola situs, dan apa batasannya.</p>
+
+  <h2>🔒 Yang terenkripsi di perangkatmu</h2>
+  <p>Data ini dienkripsi di browsermu <strong>sebelum</strong> dikirim. Server, penyedia hosting, siapa pun
+    yang memegang backup database, dan pengelola situs hanya melihat data acak yang tidak bisa dibaca:</p>
+  <ul>
+    <li>Teks catatan harian</li>
+    <li>Aktivitas yang kamu pilih, termasuk daftar aktivitas buatanmu sendiri</li>
+    <li>Draf yang tersimpan otomatis di perangkatmu</li>
+  </ul>
+  <p>Kuncinya berasal dari <strong>passphrase jurnal</strong>, yang tidak pernah dikirim ke server.
+    Akibatnya, jika passphrase hilang, catatan dan aktivitas <strong>tidak bisa dipulihkan oleh siapa pun</strong>.</p>
+
+  <h2>👀 Yang bisa dilihat pengelola</h2>
+  <p>Data berikut disimpan tanpa enkripsi supaya grafik bisa dibuat dan akun bisa berfungsi:</p>
+  <ul>
+    <li><strong>Skor mood</strong> (1–5) dan <strong>jam tidur</strong> setiap hari</li>
+    <li><strong>Tanggal</strong> setiap entri dan kapan entri itu disimpan atau diubah</li>
+    <li><strong>Ukuran</strong> data terenkripsi, yang bisa memberi gambaran kasar panjang catatanmu</li>
+    <li><strong>Alamat email</strong> akunmu, dan kapan kamu masuk (sesi login)</li>
+    <li>Kapan kamu membuat atau mengganti passphrase jurnal (bukan passphrase-nya)</li>
+  </ul>
+  <p>Untuk membatasi percobaan login, alamat IP dan email yang gagal masuk disimpan sementara di
+    memori server, paling lama 15 menit, dan hilang saat server dimulai ulang. Log server hanya mencatat
+    halaman yang dibuka dan statusnya, tanpa alamat IP.</p>
+
+  <h2>🔔 Jika kamu mengaktifkan pengingat harian</h2>
+  <p>Pengingat bersifat opsional dan diatur per perangkat. Jika diaktifkan, pengelola bisa melihat
+    <strong>jam pengingat</strong>, <strong>zona waktu</strong> perangkat, dan alamat layanan push perangkatmu
+    (yang menunjukkan jenis browser, misalnya Chrome atau Firefox). Layanan push milik pembuat browser
+    (Google, Mozilla, Apple, atau Microsoft) mengetahui kapan notifikasi dikirim, tapi tidak isinya.
+    Isi notifikasi selalu sama, "Kalau sempat, catat harimu hari ini", jadi aman jika terlihat di layar kunci.
+    Pengingat tidak dikirim jika kamu sudah mencatat hari itu.</p>
+
+  <h2>🧭 Yang dihitung hanya di perangkatmu</h2>
+  <ul>
+    <li>Perbandingan aktivitas dengan mood di halaman riwayat.</li>
+    <li>Kartu pesan lembut setelah beberapa hari dengan mood rendah. Server tidak tahu kapan kartu itu
+      muncul atau ditutup, dan tidak ada yang diberi tahu. Status "sudah ditutup" disimpan di browsermu.</li>
+  </ul>
+
+  <h2>⚠️ Batasan yang perlu kamu tahu</h2>
+  <ul>
+    <li><strong>Kode enkripsi dikirim oleh server ini.</strong> Enkripsi melindungi dari kebocoran database,
+      backup, dan rasa penasaran. Tapi pengelola atau penyedia hosting yang berniat jahat secara teori bisa
+      mengubah kode itu untuk mencuri passphrase saat kamu mengetiknya. Pakai situs ini hanya jika kamu
+      memercayai pengelolanya.</li>
+    <li>Saat jurnal terbuka, kuncinya ada di memori browser. Jurnal terkunci otomatis setelah 15 menit
+      tanpa aktivitas, saat halaman dimuat ulang, atau saat kamu keluar. Di perangkat yang dipakai
+      bersama, tekan 🔓 Kunci atau Keluar setelah selesai.</li>
+    <li>Siapa pun yang mengetahui password login dan passphrase jurnalmu bisa membaca jurnalmu.</li>
+  </ul>
+
+  <h2>🚫 Yang tidak dipakai</h2>
+  <p>Tidak ada iklan, analitik, pelacak, atau skrip dari situs lain. Semua file dikirim dari server ini.</p>
+
+  <h2>🛠️ Yang bisa dilakukan pengelola</h2>
+  <p>Pengelola tidak punya halaman admin di website. Lewat terminal server, pengelola hanya bisa:
+    melihat angka ringkas (jumlah pengguna dan entri, tanpa data per orang), melihat daftar pendaftaran terbaru
+    untuk mendeteksi akun spam, memberi <strong>password login sementara</strong> jika kamu memintanya, dan menghapus
+    akun. Tidak satu pun dari itu bisa membuka catatan atau aktivitasmu.</p>
+
+  <h2>🗑️ Menghapus akun</h2>
+  <p>Di halaman Pengaturan kamu bisa menghapus akun beserta semua entri, kunci jurnal, dan pengaturannya.
+    Penghapusan tidak bisa dibatalkan. Salinan backup database yang dibuat sebelumnya mungkin masih menyimpan
+    datamu sampai backup itu diganti, tapi catatan dan aktivitas di dalamnya tetap terenkripsi.</p>
+
+  <h2>Bukan layanan darurat</h2>
+  <p>Jurnal Mood adalah alat pencatat pribadi, bukan layanan darurat dan bukan pengganti tenaga profesional.
+    Jika kamu atau orang lain sedang dalam bahaya, buka <a href="/bantuan">halaman bantuan</a>.</p>
+</article>
+</div>
+{{end}}

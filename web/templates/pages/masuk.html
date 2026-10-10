@@ -1,0 +1,35 @@
+{{define "content"}}
+<div class="auth">
+  <section class="card glass">
+    <h1>Masuk</h1>
+    <p class="muted">Selamat datang kembali. Setelah masuk, buka jurnal dengan passphrase jurnalmu.</p>
+    {{with .Data.Error}}<p class="error" role="alert">{{.}}</p>{{end}}
+    <form method="post" action="/masuk" class="form" hx-boost="false">
+      <input type="hidden" name="csrf" value="{{.CSRF}}">
+      <label>Email
+        <input type="email" name="email" value="{{.Data.Email}}" autocomplete="email" inputmode="email" required autofocus>
+      </label>
+      <label>Password login
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" class="btn">Masuk</button>
+    </form>
+    <p class="muted center">Belum punya akun? <a href="/daftar">Daftar gratis</a></p>
+    <details class="forgot">
+      <summary>Lupa password login?</summary>
+      <p class="muted">Hubungi pengelola komunitasmu. Setelah memastikan itu memang kamu, pengelola bisa memberi
+        <strong>password sementara</strong>. Catatanmu tetap aman, karena passphrase jurnal tidak ikut berubah.</p>
+    </details>
+  </section>
+
+  <aside class="card glass auth-aside" aria-label="Tentang keamanan">
+    <h2>Dua kunci, dua fungsi</h2>
+    <ul>
+      <li><b aria-hidden="true">🔑</b><span><strong>Password login</strong> untuk masuk ke akunmu.</span></li>
+      <li><b aria-hidden="true">🔒</b><span><strong>Passphrase jurnal</strong> untuk membuka isi catatanmu. Passphrase ini
+        hanya dipakai di perangkatmu dan tidak pernah dikirim ke server.</span></li>
+      <li><b aria-hidden="true">⏱️</b><span>Jurnal terkunci otomatis setelah 15 menit tanpa aktivitas.</span></li>
+    </ul>
+  </aside>
+</div>
+{{end}}

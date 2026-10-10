@@ -1,0 +1,137 @@
+{{define "base"}}<!doctype html>
+<html lang="id" data-journal="locked">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="referrer" content="same-origin">
+  <meta name="color-scheme" content="light dark">
+  {{/* historyCacheSize 0: htmx tidak menyimpan salinan halaman (yang bisa
+       berisi teks terdekripsi) di localStorage. Tanpa inline style/eval agar
+       lolos CSP. */}}
+  <meta name="htmx-config" content='{"historyCacheSize":0,"refreshOnHistoryMiss":false,"includeIndicatorStyles":false,"allowEval":false,"allowScriptTags":false,"selfRequestsOnly":true,"responseHandling":[{"code":"204","swap":false},{"code":"[23]..","swap":true},{"code":"(401|422|429)","swap":true},{"code":"...","swap":false,"error":true}]}'>
+  <title>{{.Title}} · Jurnal Mood</title>
+  <meta name="description" content="Pencatat mood, tidur, dan jurnal harian yang privat. Catatan dienkripsi di perangkatmu sendiri.">
+  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/static/icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
+  <meta name="theme-color" content="#fbeedd" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#231f27" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Jurnal Mood">
+  <script src="/static/vendor/htmx.min.js" defer></script>
+  <script type="module" src="/static/js/app.js"></script>
+</head>
+<body hx-boost="true" class="{{if .User}}signed-in{{else}}public{{end}}">
+  <a class="skip-link" href="#isi">Lewati ke isi</a>
+  <div class="bg" aria-hidden="true"><span class="blob one"></span><span class="blob two"></span></div>
+
+{{if .User}}
+  <div id="mj-ctx" hidden data-user-id="{{.User.ID}}" data-csrf="{{.CSRF}}"></div>
+  <div class="app">
+    {{/* Laptop & iPad lanskap (>= 900px): sidebar. */}}
+    <aside class="sidebar" aria-label="Navigasi utama">
+      <a href="/beranda" class="brand"><img src="/static/icons/icon-192.png" alt=""> Jurnal Mood</a>
+      <nav class="side-nav">
+        <a href="/beranda" {{if eq .Nav "beranda"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">🏠</span> Beranda</a>
+        <a href="/hari-ini" {{if eq .Nav "hari-ini"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">✏️</span> Catatan hari ini</a>
+        <a href="/riwayat" {{if eq .Nav "riwayat"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">📅</span> Riwayat</a>
+        <a href="/pengaturan" {{if eq .Nav "pengaturan"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">⚙️</span> Pengaturan</a>
+      </nav>
+      <div class="side-spacer"></div>
+      <div class="side-foot">
+        <button type="button" class="pill lock if-unlocked" data-action="lock">🔓 Jurnal terbuka · Kunci</button>
+        <a href="/jurnal/buka" class="pill ghost if-locked">🔒 Buka jurnal</a>
+        {{/* Tautan bantuan krisis wajib selalu terlihat di setiap halaman (SPEC 4). */}}
+        <a href="/bantuan" class="pill sos">☎ Bantuan krisis</a>
+        <div class="side-account">
+          <span class="email" title="{{.User.Email}}">{{.User.Email}}</span>
+          {{/* hx-boost="false": keluar memuat ulang halaman penuh agar kunci di memori terhapus. */}}
+          <form method="post" action="/keluar" class="inline" hx-boost="false">
+            <input type="hidden" name="csrf" value="{{.CSRF}}">
+            <button type="submit" class="link">Keluar</button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      {{/* HP & iPad potret (< 900px): bar atas + tab bar bawah. */}}
+      <header class="mobile-top">
+        <a href="/beranda" class="brand"><img src="/static/icons/icon-192.png" alt=""> <span>Jurnal Mood</span></a>
+        <div class="top-actions">
+          <a href="/bantuan" class="pill sos">☎ Bantuan krisis</a>
+        </div>
+      </header>
+
+      <main class="content" id="isi">
+        {{template "content" .}}
+      </main>
+
+      <footer class="footer">
+        <p>Jurnal Mood bukan layanan darurat dan bukan pengganti tenaga profesional kesehatan jiwa.
+          Jika kamu atau orang lain sedang dalam bahaya, <a href="/bantuan">hubungi bantuan sekarang</a>.</p>
+        <p class="footer-links"><a href="/privasi">Privasi</a> · <a href="/pengaturan">Pengaturan</a> · <a href="/bantuan">Bantuan krisis</a></p>
+      </footer>
+    </div>
+  </div>
+
+  <nav class="tabbar" aria-label="Navigasi utama">
+    <a href="/beranda" class="tab" {{if eq .Nav "beranda"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">🏠</span>Beranda</a>
+    <a href="/riwayat" class="tab" {{if eq .Nav "riwayat"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">📅</span>Riwayat</a>
+    <a href="/hari-ini" class="tab tab-fab" aria-label="Isi catatan hari ini" {{if eq .Nav "hari-ini"}}aria-current="page"{{end}}><span class="fab" aria-hidden="true">＋</span></a>
+    <button type="button" class="tab if-unlocked" data-action="lock"><span class="ico" aria-hidden="true">🔓</span>Kunci</button>
+    <a href="/jurnal/buka" class="tab if-locked"><span class="ico" aria-hidden="true">🔒</span>Buka</a>
+    <a href="/pengaturan" class="tab" {{if eq .Nav "pengaturan"}}aria-current="page"{{end}}><span class="ico" aria-hidden="true">⚙️</span>Akun</a>
+  </nav>
+{{else}}
+  <header class="pubbar">
+    <a href="/" class="brand"><img src="/static/icons/icon-192.png" alt=""> <span>Jurnal Mood</span></a>
+    <nav class="pubnav" aria-label="Navigasi">
+      <a href="/#cara-kerja" class="navlink">Cara kerja</a>
+      <a href="/privasi" class="navlink" {{if eq .Nav "privasi"}}aria-current="page"{{end}}>Privasi</a>
+      <a href="/#faq" class="navlink">FAQ</a>
+      {{/* Tautan bantuan krisis wajib selalu terlihat di setiap halaman (SPEC 4). */}}
+      <a href="/bantuan" class="pill sos">☎ Bantuan krisis</a>
+      <a href="/masuk" class="btn secondary">Masuk</a>
+      <a href="/daftar" class="btn signup">Daftar</a>
+    </nav>
+  </header>
+
+  <main class="content" id="isi">
+    {{template "content" .}}
+  </main>
+
+  <footer class="footer">
+    <p>Jurnal Mood bukan layanan darurat dan bukan pengganti tenaga profesional kesehatan jiwa.
+      Jika kamu atau orang lain sedang dalam bahaya, <a href="/bantuan">hubungi bantuan sekarang</a>.</p>
+    <p class="footer-links"><a href="/#cara-kerja">Cara kerja</a> · <a href="/privasi">Privasi</a> · <a href="/#faq">FAQ</a> · <a href="/daftar">Daftar</a> · <a href="/masuk">Masuk</a></p>
+  </footer>
+{{end}}
+</body>
+</html>{{end}}
+
+{{/* Kartu pesan lembut (SPEC 4). Tersembunyi secara default; gentle.js
+     menampilkannya setelah 3 hari berturut-turut dengan mood rendah.
+     Tanpa label, diagnosis, atau nada alarmis. */}}
+{{define "gentle"}}
+<section class="card gentle" data-role="gentle-card" role="note" aria-label="Pesan untukmu" hidden>
+  <p><strong>Beberapa hari terakhir sepertinya berat.</strong> Terima kasih sudah tetap mencatat.</p>
+  <p>Kalau kamu mau, bercerita ke orang yang kamu percaya bisa sedikit meringankan. Kamu juga bisa
+    menghubungi layanan konseling kapan saja.</p>
+  <div class="gentle-actions">
+    <a href="/bantuan" class="btn secondary">Lihat kontak bantuan</a>
+    <button type="button" class="link" data-action="gentle-close">Tutup</button>
+  </div>
+</section>
+{{end}}
+
+{{/* Penunjuk langkah onboarding: akun → passphrase → catatan pertama. */}}
+{{define "steps"}}
+<ol class="steps-bar" aria-label="Langkah memulai">
+  <li class="done">1. Akun dibuat</li>
+  <li class="{{if eq . 2}}now{{else}}done{{end}}" {{if eq . 2}}aria-current="step"{{end}}>2. Passphrase jurnal</li>
+  <li class="{{if eq . 3}}now{{end}}" {{if eq . 3}}aria-current="step"{{end}}>3. Catatan pertama</li>
+</ol>
+{{end}}

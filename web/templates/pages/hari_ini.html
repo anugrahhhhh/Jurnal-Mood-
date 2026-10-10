@@ -1,0 +1,88 @@
+{{define "content"}}
+{{/* data-requires: app.js mengarahkan ke /jurnal/buka jika jurnal terkunci.
+     Semua input tanpa atribut name; isinya dikirim lewat entry-form.js
+     (aktivitas dan catatan dalam bentuk terenkripsi). */}}
+<div data-requires="unlocked" hidden></div>
+<div class="page page-entry">
+<noscript><p class="error">Catatan harian membutuhkan JavaScript untuk mengenkripsi data di perangkatmu.</p></noscript>
+
+{{/* Ditampilkan entry-form.js saat ?mulai=1 (baru selesai membuat passphrase). */}}
+<div data-role="onboarding" hidden>
+  {{template "steps" 3}}
+  <p class="notice">Langkah terakhir: isi catatan pertamamu. Pilih mood, lalu tekan Simpan. Yang lain boleh dilewati.</p>
+</div>
+
+{{template "gentle" .}}
+
+<div class="entry entry-grid" data-page="entry">
+  <div class="entry-left">
+    <div class="entry-head">
+      <h1 data-role="title">Bagaimana harimu?</h1>
+      <p class="muted" data-role="date-label"></p>
+    </div>
+    <div class="segmented centered" role="group" aria-label="Tanggal">
+      <button type="button" data-role="date-today" aria-pressed="true">Hari ini</button>
+      <button type="button" data-role="date-yesterday" aria-pressed="false">Kemarin</button>
+    </div>
+
+    <section class="mood-hero">
+      <div class="mood-face" data-role="mood-face" aria-hidden="true">◌</div>
+      <div class="mood-label" data-role="mood-label" aria-live="polite">Pilih mood</div>
+      <label class="visually-hidden" for="mood-range">Mood, 1 sampai 5</label>
+      <input id="mood-range" class="mood-range untouched" type="range" min="1" max="5" step="1" value="3"
+             data-field="mood" aria-valuetext="Belum dipilih">
+      <div class="mood-ticks">
+        <button type="button" data-role="mood-tick" data-mood="1" aria-label="Sangat buruk" aria-pressed="false">😣</button>
+        <button type="button" data-role="mood-tick" data-mood="2" aria-label="Buruk" aria-pressed="false">😕</button>
+        <button type="button" data-role="mood-tick" data-mood="3" aria-label="Biasa" aria-pressed="false">😐</button>
+        <button type="button" data-role="mood-tick" data-mood="4" aria-label="Baik" aria-pressed="false">🙂</button>
+        <button type="button" data-role="mood-tick" data-mood="5" aria-label="Sangat baik" aria-pressed="false">😄</button>
+      </div>
+    </section>
+
+    <section class="card glass week-card">
+      <div class="week" data-role="week" aria-label="Mood 7 hari terakhir"></div>
+    </section>
+  </div>
+
+  <div class="entry-right">
+    <section class="card glass">
+      <div class="row-head"><h2>Tidur</h2><span class="muted">±30 menit</span></div>
+      <div class="sleep">
+        <div class="ring" data-role="sleep-ring" aria-hidden="true"><span>🌙</span></div>
+        <div class="sleep-value" data-role="sleep-value" aria-live="polite">8 j</div>
+        <button type="button" class="step" data-action="sleep-minus" aria-label="Kurangi 30 menit">−</button>
+        <button type="button" class="step" data-action="sleep-plus" aria-label="Tambah 30 menit">+</button>
+      </div>
+    </section>
+
+    <section class="card glass">
+      <div class="row-head"><h2>Hari ini aku…</h2><button type="button" class="link" data-action="chip-edit">Ubah daftar</button></div>
+      <div class="chips" data-role="chips" role="group" aria-label="Aktivitas"></div>
+      <div class="chip-add">
+        <input type="text" data-role="chip-new" maxlength="30" placeholder="Aktivitas lain…" autocomplete="off" aria-label="Aktivitas baru">
+        <button type="button" class="step" data-action="chip-add" aria-label="Tambah aktivitas">＋</button>
+      </div>
+      <p class="hint">🔒 Aktivitas dan catatan dienkripsi di perangkat ini.</p>
+    </section>
+
+    <details class="card glass note-box" data-role="note-box">
+      <summary>＋ Catatan <span class="muted">(opsional)</span></summary>
+      <label class="visually-hidden" for="note">Catatan</label>
+      <textarea id="note" data-field="note" rows="5" placeholder="Tulis sesuatu tentang hari ini…"></textarea>
+    </details>
+
+    <p class="saved-note" data-role="saved-note" hidden>✓ Sudah tercatat. Ubah lalu simpan untuk memperbarui.</p>
+    <p class="status" data-role="status" role="status" hidden></p>
+    <button type="button" class="btn save" data-action="save" disabled>Simpan</button>
+
+    <section class="card glass saved-summary" data-role="saved-summary" hidden>
+      <h2>Tersimpan. Terima kasih sudah mencatat.</h2>
+      <p class="muted">Tujuh hari terakhirmu:</p>
+      <div class="week" data-role="summary-week"></div>
+      <div class="actions"><a href="/riwayat" class="btn secondary small">Lihat riwayat</a><a href="/beranda" class="btn secondary small">Beranda</a></div>
+    </section>
+  </div>
+</div>
+</div>
+{{end}}

@@ -1,0 +1,186 @@
+{{define "content"}}
+<div class="landing">
+
+  {{/* ================= HERO ================= */}}
+  <section class="lp-hero" aria-labelledby="lp-title">
+    <div class="lp-hero-copy">
+      <span class="lp-eyebrow">🔒 Privat · Gratis · Tanpa iklan</span>
+      <h1 id="lp-title">Catat harimu dalam satu menit. <span class="lp-grad">Hanya kamu</span> yang bisa membacanya.</h1>
+      <p class="lp-lead">Pilih mood, atur jam tidur, tandai aktivitas, dan tulis catatan singkat. Catatan dan
+        aktivitasmu dienkripsi di perangkatmu sendiri sebelum dikirim, termasuk dari pengelola situs ini.</p>
+      <div class="lp-cta">
+        <a href="/daftar" class="btn lp-btn-lg">Daftar gratis</a>
+        <a href="#cara-kerja" class="btn secondary lp-btn-lg">Lihat cara kerjanya</a>
+      </div>
+      <ul class="lp-trust" aria-label="Sekilas">
+        <li><strong>1 menit</strong><span>untuk mencatat setiap hari</span></li>
+        <li><strong>0 pelacak</strong><span>tanpa iklan &amp; analitik</span></li>
+        <li><strong>🔒 Privat</strong><span>dienkripsi di perangkatmu</span></li>
+      </ul>
+    </div>
+
+    <div class="lp-stage" aria-hidden="true">
+      <div class="lp-glow"></div>
+      <div class="lp-phone">
+        <div class="lp-notch"></div>
+        <div class="lp-screen">
+          <div class="lp-seg"><span class="on">Hari ini</span><span>Kemarin</span></div>
+          <div class="lp-faces-cycle"><span>😐</span><span>🙂</span><span>😄</span></div>
+          <div class="lp-face-label"><span>Biasa</span><span>Baik</span><span>Sangat baik</span></div>
+          <div class="lp-slider"><i></i></div>
+          <div class="lp-mini-card"><span class="lp-ring">🌙</span><b>7 j 30 m</b><span class="lp-steps"><i>−</i><i>+</i></span></div>
+          <div class="lp-mini-chips"><span class="on">🏃 Olahraga</span><span>💼 Kerja</span><span class="on">👥 Teman</span></div>
+          <div class="lp-save">Simpan</div>
+        </div>
+      </div>
+      <div class="lp-float lp-float-cal">
+        <span class="lp-float-title">Oktober</span>
+        <div class="lp-cal">
+          <i class="m3"></i><i class="m4"></i><i class="m4"></i><i class="m2"></i><i class="m3"></i><i class="m5"></i><i class="m4"></i>
+          <i class="m3"></i><i class="m4"></i><i class="m5"></i><i class="m4"></i><i></i><i></i><i></i>
+        </div>
+      </div>
+      <div class="lp-float lp-float-lock"><span>🔒</span> Terenkripsi di perangkat</div>
+      <div class="lp-float lp-float-sleep"><span class="lp-float-title">Tidur rata-rata</span><b>7 j 15 m</b><em>+20 m dari minggu lalu</em></div>
+    </div>
+  </section>
+
+  {{/* ================= SKALA MOOD ================= */}}
+  <section class="lp-scale card glass" aria-label="Skala mood">
+    <p>Satu ketukan, lima pilihan:</p>
+    <ul>
+      <li><span aria-hidden="true">😣</span>Sangat buruk</li>
+      <li><span aria-hidden="true">😕</span>Buruk</li>
+      <li><span aria-hidden="true">😐</span>Biasa</li>
+      <li><span aria-hidden="true">🙂</span>Baik</li>
+      <li><span aria-hidden="true">😄</span>Sangat baik</li>
+    </ul>
+  </section>
+
+  {{/* ================= FITUR (BENTO) ================= */}}
+  <section class="lp-section" aria-labelledby="lp-fitur">
+    <div class="lp-head">
+      <span class="lp-eyebrow">Fitur</span>
+      <h2 id="lp-fitur">Sederhana setiap malam, jelas setiap bulan</h2>
+      <p class="lp-sub">Dibuat untuk dipakai menjelang tidur: cepat, tenang, dan tidak menuntut.</p>
+    </div>
+    <div class="lp-bento">
+      <article class="card glass lp-tile lp-tile-wide">
+        <div class="lp-tile-text">
+          <h3>⏱️ Catat dalam semenit</h3>
+          <p class="muted">Ketuk wajah untuk mood, tekan ± untuk jam tidur, pilih chip aktivitas. Catatan boleh dilewati.</p>
+        </div>
+        <div class="lp-demo-faces" aria-hidden="true"><span>😣</span><span>😕</span><span>😐</span><span class="on">🙂</span><span>😄</span></div>
+      </article>
+      <article class="card glass lp-tile">
+        <h3>📅 Kalender mood</h3>
+        <p class="muted">Setiap tanggal berwarna sesuai mood. Ketuk untuk membaca catatan hari itu.</p>
+        <div class="lp-cal lp-cal-tile" aria-hidden="true">
+          <i class="m3"></i><i class="m4"></i><i class="m2"></i><i class="m3"></i><i class="m5"></i><i class="m4"></i><i class="m4"></i>
+          <i class="m1"></i><i class="m3"></i><i class="m4"></i><i class="m5"></i><i class="m4"></i><i class="m3"></i><i></i>
+        </div>
+      </article>
+      <article class="card glass lp-tile">
+        <h3>📈 Lihat polamu</h3>
+        <p class="muted">Grafik mood dan tidur per minggu, bulan, hingga setahun.</p>
+        <svg class="lp-spark" viewBox="0 0 200 60" aria-hidden="true">
+          <path class="lp-spark-line" d="M6,38 L36,46 L66,26 L96,30 L126,12 L156,22 L194,8"/>
+          <g class="lp-spark-dots"><circle cx="6" cy="38" r="3.5"/><circle cx="66" cy="26" r="3.5"/><circle cx="126" cy="12" r="3.5"/><circle cx="194" cy="8" r="3.5"/></g>
+        </svg>
+      </article>
+      <article class="card glass lp-tile">
+        <h3>💛 Pola yang lembut</h3>
+        <p class="muted">Aktivitas yang sering muncul di hari baikmu, dihitung di perangkatmu sendiri. Tanpa streak, tanpa tekanan.</p>
+        <div class="lp-demo-chips" aria-hidden="true"><span>🏃 Olahraga <b>+1.2</b></span><span>👥 Teman <b>+0.8</b></span></div>
+      </article>
+      <article class="card glass lp-tile">
+        <h3>📱 Di semua perangkat</h3>
+        <p class="muted">HP, tablet, atau laptop. Bisa dipasang di layar utama dan memberi pengingat harian bila kamu mau.</p>
+        <div class="lp-devices" aria-hidden="true"><span class="d-phone"></span><span class="d-tab"></span><span class="d-lap"></span></div>
+      </article>
+    </div>
+  </section>
+
+  {{/* ================= CARA KERJA PRIVASI ================= */}}
+  <section id="cara-kerja" class="lp-section" aria-labelledby="lp-cara">
+    <div class="lp-head">
+      <span class="lp-eyebrow">Privasi</span>
+      <h2 id="lp-cara">Enkripsi terjadi di browsermu, bukan di server</h2>
+      <p class="lp-sub">Passphrase jurnal hanya kamu yang tahu dan tidak pernah dikirim.</p>
+    </div>
+    <ol class="lp-steps-flow">
+      <li class="card glass"><span class="num">1</span><div><h3>Kamu menulis</h3><p class="muted">Di HP atau laptopmu: mood, tidur, aktivitas, catatan.</p></div></li>
+      <li class="card glass"><span class="num">2</span><div><h3>Dikunci di perangkat</h3><p class="muted">Aktivitas dan catatan dienkripsi dengan passphrase jurnalmu.</p></div></li>
+      <li class="card glass"><span class="num">3</span><div><h3>Server menyimpan data acak</h3><p class="muted">Pengelola, hosting, dan backup tidak bisa membacanya.</p></div></li>
+    </ol>
+    <div class="lp-cipher card glass" aria-label="Contoh: catatan sebelum dan sesudah dienkripsi">
+      <div class="lp-cipher-side">
+        <span class="lp-tag">Yang kamu tulis</span>
+        <p class="lp-plain">“Hari ini cukup tenang. Jalan sore bareng teman.”</p>
+      </div>
+      <div class="lp-cipher-arrow" aria-hidden="true">🔒 <span class="arrow-across">→</span><span class="arrow-down">↓</span></div>
+      <div class="lp-cipher-side">
+        <span class="lp-tag">Yang disimpan server</span>
+        <p class="lp-code">bf4ac4b25c172a61f49db02a 9e1c7d40aa3f62b8 05d7e91c3b6f2a84 d0e3…</p>
+      </div>
+    </div>
+  </section>
+
+  {{/* ================= TRANSPARANSI ================= */}}
+  <section class="lp-section" aria-labelledby="lp-jujur">
+    <div class="lp-head">
+      <span class="lp-eyebrow">Transparan</span>
+      <h2 id="lp-jujur">Jujur soal apa yang terlihat</h2>
+      <p class="lp-sub">Kami tidak menjanjikan lebih dari yang bisa ditepati.</p>
+    </div>
+    <div class="lp-compare">
+      <div class="card glass lp-compare-col">
+        <h3>🔒 Terenkripsi, tidak bisa dibaca siapa pun</h3>
+        <ul><li>Teks catatan harian</li><li>Aktivitas yang kamu pilih</li><li>Daftar aktivitas buatanmu</li><li>Draf yang tersimpan otomatis</li></ul>
+      </div>
+      <div class="card glass lp-compare-col">
+        <h3>👀 Terlihat pengelola (agar grafik berfungsi)</h3>
+        <ul><li>Skor mood 1–5 dan jam tidur</li><li>Tanggal setiap entri</li><li>Alamat email akunmu</li></ul>
+        <p class="hint"><a href="/privasi">Baca halaman privasi lengkap →</a></p>
+      </div>
+    </div>
+  </section>
+
+  {{/* ================= FAQ ================= */}}
+  <section id="faq" class="lp-section" aria-labelledby="faq-judul">
+    <div class="lp-head">
+      <span class="lp-eyebrow">FAQ</span>
+      <h2 id="faq-judul">Pertanyaan yang sering diajukan</h2>
+    </div>
+    <div class="faq">
+      <details class="card glass"><summary>Apakah Jurnal Mood gratis?</summary>
+        <p>Ya, gratis. Tidak ada iklan, langganan, atau pelacak.</p></details>
+      <details class="card glass"><summary>Siapa yang bisa membaca catatanku?</summary>
+        <p>Hanya kamu. Catatan dan aktivitas dienkripsi di perangkatmu. Skor mood dan jam tidur disimpan tanpa enkripsi
+          agar grafik bisa dibuat, dan itu bisa dilihat pengelola. Semuanya dijelaskan di <a href="/privasi">halaman privasi</a>.</p></details>
+      <details class="card glass"><summary>Bagaimana kalau aku lupa passphrase jurnal?</summary>
+        <p>Catatan dan aktivitas tidak bisa dipulihkan oleh siapa pun, termasuk pengelola. Skor mood dan jam tidur tetap ada.
+          Simpan passphrase di pengelola password atau di kertas di tempat aman.</p></details>
+      <details class="card glass"><summary>Bagaimana kalau aku lupa password login?</summary>
+        <p>Hubungi pengelola komunitasmu. Setelah memastikan itu memang kamu, pengelola bisa memberi password sementara,
+          lalu kamu membuat password baru saat masuk. Catatanmu tetap aman, karena passphrase jurnal tidak ikut berubah.</p></details>
+      <details class="card glass"><summary>Apa bedanya password login dan passphrase jurnal?</summary>
+        <p>Password login untuk masuk ke akun. Passphrase jurnal untuk mengunci isi catatanmu dan tidak pernah dikirim ke server.</p></details>
+      <details class="card glass"><summary>Bisa dipakai di HP dan laptop sekaligus?</summary>
+        <p>Bisa. Masuk dengan akun yang sama dan buka jurnal dengan passphrase yang sama di setiap perangkat. Di HP, kamu juga bisa menambahkannya ke layar utama.</p></details>
+      <details class="card glass"><summary>Apakah ini pengganti psikolog atau layanan darurat?</summary>
+        <p>Bukan. Jurnal Mood adalah alat pencatat pribadi. Jika kamu atau orang lain sedang dalam bahaya, buka <a href="/bantuan">halaman bantuan krisis</a>.</p></details>
+      <details class="card glass"><summary>Bagaimana cara menghapus semua dataku?</summary>
+        <p>Di Pengaturan ada tombol Hapus akun. Akun, semua entri, dan kunci jurnalmu dihapus permanen.</p></details>
+    </div>
+  </section>
+
+  {{/* ================= CTA ================= */}}
+  <section class="lp-final" aria-labelledby="lp-final-judul">
+    <div class="lp-final-faces" aria-hidden="true"><span>😐</span><span>🙂</span><span>😄</span></div>
+    <h2 id="lp-final-judul">Mulai mencatat malam ini</h2>
+    <p>Daftar dalam satu menit. Tanpa kartu kredit, tanpa iklan.</p>
+    <div class="lp-cta center"><a href="/daftar" class="btn lp-btn-lg lp-btn-light">Daftar gratis</a><a href="/masuk" class="btn secondary lp-btn-lg">Sudah punya akun</a></div>
+  </section>
+</div>
+{{end}}
